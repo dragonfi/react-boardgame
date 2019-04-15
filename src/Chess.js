@@ -59,17 +59,93 @@ const initialBoardState = {
 const cols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const rows = [8, 7, 6, 5, 4, 3, 2, 1];
 
+function clamp(number, min, max) {
+  if (number > max) {
+    return max;
+  } else if (number < min) {
+    return min;
+  } else {
+    return number;
+  }
+}
+function idAdd(id, dcol, drow) {
+  var col = cols.indexOf(id[0]);
+  var row = Number(id[1]);
+  col += dcol;
+  row += drow;
+  return '' + cols[col] + row;
+}
+
 class Chess extends Component {
   constructor(props) {
     super(props);
     this.state = {};
     this.state.pieces = {...initialBoardState};
-    this.state.highlighted = ['a1'];
+    this.state.highlighted = [];
+    this.state.highlightedPiece = '';
   }
-  highlightMoves(alpha, numeric, piece) {
-    var id = "" + alpha + numeric;
-    console.log(id);
-    this.setState({highlighted: this.state.highlighted.concat(id)});
+  highlightMoves(id, piece) {
+    if (!piece) {
+      this.setState({highlighted: [], highlightedPiece: ''});
+      this.forceUpdate();
+      return;
+    }
+    var highlighted = [];
+    if (piece === "wP") {
+      highlighted.push(idAdd(id, 0, 1));
+    }
+    if (piece === "bP") {
+      highlighted.push(idAdd(id, 0, -1));
+    }
+    if (piece[1] === "K") {
+      for (const i of [-1, 0, 1]) {
+        for (const j of [-1, 0, 1]) {
+          if (i === 0 && j === 0) {
+            continue;
+          }
+          highlighted.push(idAdd(id, i, j));
+        }
+      }
+    }
+    if (piece[1] === "Q") {
+      for (const i of [1, 2, 3, 4, 5, 6, 7]) {
+        highlighted.push(idAdd(id, i, i));
+        highlighted.push(idAdd(id, 0, i));
+        highlighted.push(idAdd(id, -i, i));
+        highlighted.push(idAdd(id, i, 0));
+        highlighted.push(idAdd(id, -i, 0));
+        highlighted.push(idAdd(id, i, -i));
+        highlighted.push(idAdd(id, 0, -i));
+        highlighted.push(idAdd(id, -i, -i));
+      }
+    }
+    if (piece[1] === "B") {
+      for (const i of [1, 2, 3, 4, 5, 6, 7]) {
+        highlighted.push(idAdd(id, i, i));
+        highlighted.push(idAdd(id, -i, i));
+        highlighted.push(idAdd(id, i, -i));
+        highlighted.push(idAdd(id, -i, -i));
+      }
+    }
+    if (piece[1] === "N") {
+      highlighted.push(idAdd(id, -1, -2));
+      highlighted.push(idAdd(id, -1, 2));
+      highlighted.push(idAdd(id, 1, -2));
+      highlighted.push(idAdd(id, 1, 2));
+      highlighted.push(idAdd(id, 2, -1));
+      highlighted.push(idAdd(id, 2, 1));
+      highlighted.push(idAdd(id, -2, -1));
+      highlighted.push(idAdd(id, -2, 1));
+    }
+    if (piece[1] === "R") {
+      for (const i of [1, 2, 3, 4, 5, 6, 7]) {
+        highlighted.push(idAdd(id, 0, i));
+        highlighted.push(idAdd(id, i, 0));
+        highlighted.push(idAdd(id, -i, 0));
+        highlighted.push(idAdd(id, 0, -i));
+      }
+    }
+    this.setState({highlighted: highlighted, highlightedPiece: id});
     this.forceUpdate();
   }
 
@@ -77,11 +153,16 @@ class Chess extends Component {
     var id = "" + alpha + numeric;
     var piece = this.state.pieces[id];
     var pieceRepr = reprPiece(piece);
-    console.log(id, this.state.highlighted);
-    var highlighted = this.state.highlighted.includes(id) ? 'highlighted' : '';
-    var onClick = (e) => this.highlightMoves(alpha, numeric, piece);
+    var highlighted = '';
+    if (this.state.highlighted.includes(id)) {
+      highlighted = 'highlighted';
+    }
+    console.log(this.state.highlightedPiece, id);
+    if (this.state.highlightedPiece === id) {
+      highlighted = 'highlighted-piece';
+    }
+    var onClick = (e) => this.highlightMoves(id, piece);
     return <td className={highlighted} title={id} key={id} onClick={onClick}>{pieceRepr}</td>;
-
   }
 
   renderRow(numeric) {

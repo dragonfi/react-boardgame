@@ -21,6 +21,10 @@ tr:nth-child(2n) td:nth-child(2n+1) {
   background-color: #dd6666;
 }
 
-tr:nth-child(n) td.highlighted, tr:nth-child(n) td:hover {
-  background-color: #333333;
+tr:nth-child(n) td.highlighted {
+  background-color: #999999;
+}
+
+tr:nth-child(n) td.highlighted-piece, tr:nth-child(n) td:hover {
+  background-color: #666666;
 }
