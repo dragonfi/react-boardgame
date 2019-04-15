@@ -2,6 +2,24 @@ import React, { Component } from 'react';
 
 import './Chess.css';
 
+function reprPiece(code) {
+  const reprs = {
+    'wK': '♔',
+    'wQ': '♕',
+    'wR': '♖',
+    'wB': '♗',
+    'wN': '♘',
+    'wP': '♙',
+    'bK': '♚',
+    'bQ': '♛',
+    'bR': '♜',
+    'bB': '♝',
+    'bN': '♞',
+    'bP': '♟',
+  }
+  return reprs[code];
+}
+
 class Chess extends Component {
   render() {
     const cols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
@@ -43,7 +61,7 @@ class Chess extends Component {
     }
     var cells = rows.map((n) =>
       <tr>{cols.map((a) =>
-        <td title={"" + n + a}>{pieces["" + a + n]}</td>
+        <td title={"" + n + a}>{reprPiece(pieces["" + a + n])}</td>
       )}</tr>);
     return (
       <table class="react-chess-game">
