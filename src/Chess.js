@@ -56,23 +56,46 @@ const initialBoardState = {
   'h2': 'wP',
 };
 
+const cols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+const rows = [8, 7, 6, 5, 4, 3, 2, 1];
+
 class Chess extends Component {
   constructor(props) {
     super(props);
-    this.pieces = {...initialBoardState};
+    this.state = {};
+    this.state.pieces = {...initialBoardState};
+    this.state.highlighted = ['a1'];
   }
+  highlightMoves(alpha, numeric, piece) {
+    var id = "" + alpha + numeric;
+    console.log(id);
+    this.setState({highlighted: this.state.highlighted.concat(id)});
+    this.forceUpdate();
+  }
+
+  renderCell(alpha, numeric) {
+    var id = "" + alpha + numeric;
+    var piece = this.state.pieces[id];
+    var pieceRepr = reprPiece(piece);
+    console.log(id, this.state.highlighted);
+    var highlighted = this.state.highlighted.includes(id) ? 'highlighted' : '';
+    var onClick = (e) => this.highlightMoves(alpha, numeric, piece);
+    return <td className={highlighted} title={id} key={id} onClick={onClick}>{pieceRepr}</td>;
+
+  }
+
+  renderRow(numeric) {
+    return <tr>{cols.map(alpha => this.renderCell(alpha, numeric))}</tr>
+  }
+
+  renderBoard() {
+    return (<table className="react-chess-game"><tbody>
+      {rows.map(numeric => this.renderRow(numeric))}
+    </tbody></table>)
+  }
+
   render() {
-    const cols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-    const rows = [8, 7, 6, 5, 4, 3, 2, 1];
-    var cells = rows.map((n) =>
-      <tr>{cols.map((a) =>
-        <td title={"" + n + a}>{reprPiece(this.pieces["" + a + n])}</td>
-      )}</tr>);
-    return (
-      <table class="react-chess-game">
-        {cells}
-      </table>
-    )
+    return this.renderBoard();
   }
 }
 
