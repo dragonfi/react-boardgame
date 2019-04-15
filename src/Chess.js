@@ -59,15 +59,6 @@ const initialBoardState = {
 const cols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const rows = [8, 7, 6, 5, 4, 3, 2, 1];
 
-function clamp(number, min, max) {
-  if (number > max) {
-    return max;
-  } else if (number < min) {
-    return min;
-  } else {
-    return number;
-  }
-}
 function idAdd(id, dcol, drow) {
   var col = cols.indexOf(id[0]);
   var row = Number(id[1]);
