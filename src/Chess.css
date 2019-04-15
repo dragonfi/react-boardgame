@@ -1,0 +1,21 @@
+table.react-chess-game, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+td {
+  height: 2em;
+  width: 2em;
+}
+
+td {
+  background-color: #ffcccc;
+}
+
+tr:nth-child(2n+1) td:nth-child(2n) {
+  background-color: #dd6666;
+}
+
+tr:nth-child(2n) td:nth-child(2n+1) {
+  background-color: #dd6666;
+}
