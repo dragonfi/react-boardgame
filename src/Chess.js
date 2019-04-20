@@ -56,15 +56,15 @@ const initialBoardState = {
   'h2': 'wP',
 };
 
-const cols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-const rows = [8, 7, 6, 5, 4, 3, 2, 1];
+const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+const ranks = [8, 7, 6, 5, 4, 3, 2, 1];
 
-function idAdd(id, dcol, drow) {
-  var col = cols.indexOf(id[0]);
-  var row = Number(id[1]);
-  col += dcol;
-  row += drow;
-  return '' + cols[col] + row;
+function squareAdd(square, dfile, drank) {
+  var file = files.indexOf(square[0]);
+  var rank = Number(square[1]);
+  file += dfile;
+  rank += drank;
+  return '' + files[file] + rank;
 }
 
 class Chess extends Component {
@@ -75,7 +75,7 @@ class Chess extends Component {
     this.state.highlighted = [];
     this.state.highlightedPiece = '';
   }
-  highlightMoves(id, piece) {
+  highlightMoves(square, piece) {
     if (!piece) {
       this.setState({highlighted: [], highlightedPiece: ''});
       this.forceUpdate();
@@ -83,10 +83,10 @@ class Chess extends Component {
     }
     var highlighted = [];
     if (piece === "wP") {
-      highlighted.push(idAdd(id, 0, 1));
+      highlighted.push(squareAdd(square, 0, 1));
     }
     if (piece === "bP") {
-      highlighted.push(idAdd(id, 0, -1));
+      highlighted.push(squareAdd(square, 0, -1));
     }
     if (piece[1] === "K") {
       for (const i of [-1, 0, 1]) {
@@ -94,75 +94,75 @@ class Chess extends Component {
           if (i === 0 && j === 0) {
             continue;
           }
-          highlighted.push(idAdd(id, i, j));
+          highlighted.push(squareAdd(square, i, j));
         }
       }
     }
     if (piece[1] === "Q") {
       for (const i of [1, 2, 3, 4, 5, 6, 7]) {
-        highlighted.push(idAdd(id, i, i));
-        highlighted.push(idAdd(id, 0, i));
-        highlighted.push(idAdd(id, -i, i));
-        highlighted.push(idAdd(id, i, 0));
-        highlighted.push(idAdd(id, -i, 0));
-        highlighted.push(idAdd(id, i, -i));
-        highlighted.push(idAdd(id, 0, -i));
-        highlighted.push(idAdd(id, -i, -i));
+        highlighted.push(squareAdd(square, i, i));
+        highlighted.push(squareAdd(square, 0, i));
+        highlighted.push(squareAdd(square, -i, i));
+        highlighted.push(squareAdd(square, i, 0));
+        highlighted.push(squareAdd(square, -i, 0));
+        highlighted.push(squareAdd(square, i, -i));
+        highlighted.push(squareAdd(square, 0, -i));
+        highlighted.push(squareAdd(square, -i, -i));
       }
     }
     if (piece[1] === "B") {
       for (const i of [1, 2, 3, 4, 5, 6, 7]) {
-        highlighted.push(idAdd(id, i, i));
-        highlighted.push(idAdd(id, -i, i));
-        highlighted.push(idAdd(id, i, -i));
-        highlighted.push(idAdd(id, -i, -i));
+        highlighted.push(squareAdd(square, i, i));
+        highlighted.push(squareAdd(square, -i, i));
+        highlighted.push(squareAdd(square, i, -i));
+        highlighted.push(squareAdd(square, -i, -i));
       }
     }
     if (piece[1] === "N") {
-      highlighted.push(idAdd(id, -1, -2));
-      highlighted.push(idAdd(id, -1, 2));
-      highlighted.push(idAdd(id, 1, -2));
-      highlighted.push(idAdd(id, 1, 2));
-      highlighted.push(idAdd(id, 2, -1));
-      highlighted.push(idAdd(id, 2, 1));
-      highlighted.push(idAdd(id, -2, -1));
-      highlighted.push(idAdd(id, -2, 1));
+      highlighted.push(squareAdd(square, -1, -2));
+      highlighted.push(squareAdd(square, -1, 2));
+      highlighted.push(squareAdd(square, 1, -2));
+      highlighted.push(squareAdd(square, 1, 2));
+      highlighted.push(squareAdd(square, 2, -1));
+      highlighted.push(squareAdd(square, 2, 1));
+      highlighted.push(squareAdd(square, -2, -1));
+      highlighted.push(squareAdd(square, -2, 1));
     }
     if (piece[1] === "R") {
       for (const i of [1, 2, 3, 4, 5, 6, 7]) {
-        highlighted.push(idAdd(id, 0, i));
-        highlighted.push(idAdd(id, i, 0));
-        highlighted.push(idAdd(id, -i, 0));
-        highlighted.push(idAdd(id, 0, -i));
+        highlighted.push(squareAdd(square, 0, i));
+        highlighted.push(squareAdd(square, i, 0));
+        highlighted.push(squareAdd(square, -i, 0));
+        highlighted.push(squareAdd(square, 0, -i));
       }
     }
-    this.setState({highlighted: highlighted, highlightedPiece: id});
+    this.setState({highlighted: highlighted, highlightedPiece: square});
     this.forceUpdate();
   }
 
-  renderCell(alpha, numeric) {
-    var id = "" + alpha + numeric;
-    var piece = this.state.pieces[id];
+  renderSquare(file, rank) {
+    var square = "" + file + rank;
+    var piece = this.state.pieces[square];
     var pieceRepr = reprPiece(piece);
     var highlighted = '';
-    if (this.state.highlighted.includes(id)) {
+    if (this.state.highlighted.includes(square)) {
       highlighted = 'highlighted';
     }
-    console.log(this.state.highlightedPiece, id);
-    if (this.state.highlightedPiece === id) {
+    console.log(this.state.highlightedPiece, square);
+    if (this.state.highlightedPiece === square) {
       highlighted = 'highlighted-piece';
     }
-    var onClick = (e) => this.highlightMoves(id, piece);
-    return <td className={highlighted} title={id} key={id} onClick={onClick}>{pieceRepr}</td>;
+    var onClick = (e) => this.highlightMoves(square, piece);
+    return <td className={highlighted} title={square} key={square} onClick={onClick}>{pieceRepr}</td>;
   }
 
-  renderRow(numeric) {
-    return <tr>{cols.map(alpha => this.renderCell(alpha, numeric))}</tr>
+  renderRank(rank) {
+    return <tr>{files.map(file => this.renderSquare(file, rank))}</tr>
   }
 
   renderBoard() {
     return (<table className="react-chess-game"><tbody>
-      {rows.map(numeric => this.renderRow(numeric))}
+      {ranks.map(rank => this.renderRank(rank))}
     </tbody></table>)
   }
 
