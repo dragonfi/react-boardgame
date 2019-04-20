@@ -6,7 +6,7 @@ const BLACK = "chess-color-black";
 const WHITE = "chess-color-white";
 
 class Piece extends Component {
-  availableMoves(board) {
+  static availableMoves(board, square, piece) {
     throw TypeError("Not implemented");
   }
   render() {
