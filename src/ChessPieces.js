@@ -126,7 +126,7 @@ function reprPiece(code) {
 }
 
 export function pieceFromNotation(code) {
-  if (!code) {
+  if (!code || code.length < 2) {
     return;
   }
   var color = code[0] === 'w' ? WHITE : BLACK;
