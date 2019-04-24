@@ -9,6 +9,7 @@ class Piece extends Component {
   static availableMoves(board, square, piece) {
     throw TypeError("Not implemented");
   }
+
   render() {
     return <div className={"chess-piece " + this.props.color}>{this.props.figure}</div>
   }
@@ -25,6 +26,7 @@ class Rook extends Component {
     }
     return moves;
   }
+
   render() {
     return <Piece figure="♜" color={this.props.color} validMoves={this.validMoves}></Piece>
   }
@@ -41,6 +43,7 @@ class Bishop extends Component {
     }
     return moves;
   }
+
   render() {
     return <Piece figure="♝" color={this.props.color} validMoves={this.validMoves}></Piece>
   }
@@ -59,6 +62,7 @@ class Knight extends Component {
     moves.push(squareAdd(square, -2, 1));
     return moves;
   }
+
   render() {
     return <Piece figure="♞" color={this.props.color} validMoves={this.validMoves}></Piece>
   }
@@ -74,6 +78,7 @@ class Pawn extends Component {
     }
     return moves;
   }
+
   render() {
     return <Piece figure="♟" color={this.props.color} validMoves={this.validMoves}></Piece>
   }
@@ -92,6 +97,7 @@ class King extends Component {
     moves.push(squareAdd(square, -1, -1));
     return moves;
   }
+
   render() {
     return <Piece figure="♚" color={this.props.color} validMoves={this.validMoves}></Piece>
   }
@@ -112,6 +118,7 @@ class Queen extends Component {
     }
     return moves;
   }
+
   render() {
     return <Piece figure="♛" color={this.props.color} validMoves={this.validMoves}></Piece>
   }
