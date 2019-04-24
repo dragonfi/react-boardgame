@@ -48,7 +48,6 @@ class Chess extends Component {
   movePiece(source, destination) {
     var pieces = this.state.pieces;
     var piece = pieces[source];
-    console.log(source, destination, piece);
     pieces[destination] = piece;
     delete pieces[source];
     this.setState({pieces: pieces});
@@ -56,7 +55,6 @@ class Chess extends Component {
   }
 
   handleOnClick(square, piece) {
-    console.log("onclick", square, piece);
     if (this.state.highlighted.includes(square)) {
       this.movePiece(this.state.highlightedSquare, square);
     } else {

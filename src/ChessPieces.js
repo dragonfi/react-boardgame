@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import {squareAdd} from './ChessUtils.js';
+import {squareAdd, squareColor} from './ChessUtils.js';
 
 const BLACK = "chess-color-black";
 const WHITE = "chess-color-white";
@@ -50,16 +50,14 @@ class Bishop extends Component {
 }
 
 class Knight extends Component {
-  static validMoves(board, square) {
+  static validMoves(board, square, piece) {
     var moves = [];
-    moves.push(squareAdd(square, -1, -2));
-    moves.push(squareAdd(square, -1, 2));
-    moves.push(squareAdd(square, 1, -2));
-    moves.push(squareAdd(square, 1, 2));
-    moves.push(squareAdd(square, 2, -1));
-    moves.push(squareAdd(square, 2, 1));
-    moves.push(squareAdd(square, -2, -1));
-    moves.push(squareAdd(square, -2, 1));
+    for (const delta of [[-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1], [-2, -1], [-2, 1]]) {
+      let newSquare = squareAdd(square, delta[0], delta[1]);
+      if (squareColor(board, newSquare) !== piece.props.color) {
+        moves.push(newSquare);
+      }
+    }
     return moves;
   }
 
@@ -85,16 +83,14 @@ class Pawn extends Component {
 }
 
 class King extends Component {
-  static validMoves(board, square) {
+  static validMoves(board, square, piece) {
     var moves = [];
-    moves.push(squareAdd(square, 1, 1));
-    moves.push(squareAdd(square, 0, 1));
-    moves.push(squareAdd(square, -1, 1));
-    moves.push(squareAdd(square, 1, 0));
-    moves.push(squareAdd(square, -1, 0));
-    moves.push(squareAdd(square, 1, -1));
-    moves.push(squareAdd(square, 0, -1));
-    moves.push(squareAdd(square, -1, -1));
+    for (const delta of [[1, 1], [0, 1], [-1, 1], [1, 0], [-1, 0], [1, -1], [0, -1], [-1, -1]]) {
+      let newSquare = squareAdd(square, delta[0], delta[1]);
+      if (squareColor(board, newSquare) !== piece.props.color) {
+        moves.push(newSquare);
+      }
+    }
     return moves;
   }
 

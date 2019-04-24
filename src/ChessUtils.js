@@ -10,4 +10,9 @@ function squareAdd(square, dfile, drank) {
   return '' + files[file] + rank;
 }
 
-export {files, ranks, squareAdd};
+function squareColor(board, square) {
+  const piece = board.state.pieces[square];
+  return piece ? piece.props.color : undefined;
+}
+
+export {files, ranks, squareAdd, squareColor};
