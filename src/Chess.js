@@ -27,19 +27,42 @@ class Chess extends Component {
     this.state = {};
     this.state.pieces = createInitialBoardState();
     this.state.highlighted = [];
-    this.state.highlightedPiece = '';
+    this.state.highlightedSquare = '';
+  }
+  clearHighlights() {
+    this.setState({highlightedSquare: '', highlighted: []});
   }
   highlightMoves(square, piece) {
     if (!piece) {
-      this.setState({highlighted: [], highlightedPiece: ''});
+      this.setState({highlighted: [], highlightedSquare: ''});
       this.forceUpdate();
       return;
     }
     this.setState({
       highlighted: piece.type.validMoves(this, square, piece),
-      highlightedPiece: square
+      highlightedSquare: square
     });
     this.forceUpdate();
+  }
+
+  movePiece(source, destination) {
+    var pieces = this.state.pieces;
+    var piece = pieces[source];
+    console.log(source, destination, piece);
+    pieces[destination] = piece;
+    delete pieces[source];
+    this.setState({pieces: pieces});
+    this.clearHighlights();
+    this.forceUpdate();
+  }
+
+  handleOnClick(square, piece) {
+    console.log("onclick", square, piece);
+    if (this.state.highlighted.includes(square)) {
+      this.movePiece(this.state.highlightedSquare, square);
+    } else {
+      this.highlightMoves(square, piece);
+    }
   }
 
   renderSquare(file, rank) {
@@ -49,10 +72,10 @@ class Chess extends Component {
     if (this.state.highlighted.includes(square)) {
       highlighted = 'highlighted';
     }
-    if (this.state.highlightedPiece === square) {
+    if (this.state.highlightedSquare === square) {
       highlighted = 'highlighted-piece';
     }
-    var onClick = (e) => this.highlightMoves(square, piece);
+    var onClick = (e) => this.handleOnClick(square, piece);
     return <td className={highlighted} title={square} key={square} onClick={onClick}>{piece}</td>;
   }
 
