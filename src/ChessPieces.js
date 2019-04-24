@@ -32,6 +32,17 @@ function isEmptySquare(board, square) {
   return squareColor(board, square) === NOCOLOR;
 }
 
+function projectedMove(board, square, direction, color) {
+  var moves = [];
+  for(const i of [1, 2, 3, 4, 5, 6, 7]) {
+    let dfile = direction[0] * i;
+    let drank = direction[1] * i;
+    moves.push(squareAdd(square, dfile, drank));
+  }
+  console.log("partial:", moves);
+  return moves;
+}
+
 class Piece extends Component {
   static availableMoves(board, square, piece) {
     throw TypeError("Not implemented");
@@ -43,13 +54,10 @@ class Piece extends Component {
 }
 
 class Rook extends Component {
-  static validMoves(board, square) {
+  static validMoves(board, square, piece) {
     var moves = [];
-    for (const i of [1, 2, 3, 4, 5, 6, 7]) {
-      moves.push(squareAdd(square, 0, i));
-      moves.push(squareAdd(square, i, 0));
-      moves.push(squareAdd(square, -i, 0));
-      moves.push(squareAdd(square, 0, -i));
+    for (const direction of [[0, 1], [1, 0], [0, -1], [-1, 0]]) {
+      moves = moves.concat(projectedMove(board, square, direction, piece.props.color));
     }
     return moves;
   }
@@ -60,13 +68,10 @@ class Rook extends Component {
 }
 
 class Bishop extends Component {
-  static validMoves(board, square) {
+  static validMoves(board, square, piece) {
     var moves = [];
-    for (const i of [1, 2, 3, 4, 5, 6, 7]) {
-      moves.push(squareAdd(square, i, i));
-      moves.push(squareAdd(square, -i, i));
-      moves.push(squareAdd(square, i, -i));
-      moves.push(squareAdd(square, -i, -i));
+    for (const direction of [[1, 1], [-1, 1], [1, -1], [-1, -1]]) {
+      moves = moves.concat(projectedMove(board, square, direction, piece.props.color));
     }
     return moves;
   }
@@ -140,17 +145,10 @@ class King extends Component {
 }
 
 class Queen extends Component {
-  static validMoves(board, square) {
+  static validMoves(board, square, piece) {
     var moves = [];
-    for (const i of [1, 2, 3, 4, 5, 6, 7]) {
-      moves.push(squareAdd(square, i, i));
-      moves.push(squareAdd(square, 0, i));
-      moves.push(squareAdd(square, -i, i));
-      moves.push(squareAdd(square, i, 0));
-      moves.push(squareAdd(square, -i, 0));
-      moves.push(squareAdd(square, i, -i));
-      moves.push(squareAdd(square, 0, -i));
-      moves.push(squareAdd(square, -i, -i));
+    for (const direction of [[1, 1], [1, 0], [1, -1], [0, 1], [0, -1], [-1, 1], [-1, 0], [-1, -1]]) {
+      moves = moves.concat(projectedMove(board, square, direction, piece.props.color));
     }
     return moves;
   }
