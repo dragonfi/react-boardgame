@@ -35,14 +35,12 @@ class Chess extends Component {
   highlightMoves(square, piece) {
     if (!piece) {
       this.setState({highlighted: [], highlightedSquare: ''});
-      this.forceUpdate();
       return;
     }
     this.setState({
       highlighted: piece.type.validMoves(this, square, piece),
       highlightedSquare: square
     });
-    this.forceUpdate();
   }
 
   movePiece(source, destination) {
@@ -53,7 +51,6 @@ class Chess extends Component {
     delete pieces[source];
     this.setState({pieces: pieces});
     this.clearHighlights();
-    this.forceUpdate();
   }
 
   handleOnClick(square, piece) {
