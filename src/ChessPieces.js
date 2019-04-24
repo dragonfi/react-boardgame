@@ -4,6 +4,7 @@ import {squareAdd, squareColor} from './ChessUtils.js';
 
 const BLACK = "chess-color-black";
 const WHITE = "chess-color-white";
+const NOCOLOR = undefined;
 
 class Piece extends Component {
   static availableMoves(board, square, piece) {
@@ -69,10 +70,24 @@ class Knight extends Component {
 class Pawn extends Component {
   static validMoves(board, square, piece) {
     var moves = [];
-    if (piece.props.color === WHITE) {
-      moves.push(squareAdd(square, 0, 1));
-    } else {
-      moves.push(squareAdd(square, 0, -1));
+    var direction = piece.props.color === WHITE ? 1 : -1;
+
+    let newSquare = squareAdd(square, 0, direction);
+    if (squareColor(board, newSquare) === undefined) {
+      moves.push(newSquare);
+    }
+    if ('27'.includes(square[1])) {
+      let newSquare = squareAdd(square, 0, direction*2);
+      if (squareColor(board, newSquare) === undefined) {
+        moves.push(newSquare);
+      }
+    }
+    for (const drank of [-1, 1]) {
+      let newSquare = squareAdd(square, drank, direction);
+      let opposingColor = piece.props.color === WHITE ? BLACK : WHITE;
+      if (squareColor(board, newSquare) === opposingColor) {
+        moves.push(newSquare);
+      }
     }
     return moves;
   }
