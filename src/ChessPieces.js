@@ -1,10 +1,36 @@
 import React, { Component } from 'react';
 
-import {squareAdd, squareColor} from './ChessUtils.js';
+import {squareAdd} from './ChessUtils.js';
 
 const BLACK = "chess-color-black";
 const WHITE = "chess-color-white";
 const NOCOLOR = undefined;
+
+
+function opposingColor(color) {
+  switch (color) {
+    case WHITE: return BLACK;
+    case BLACK: return WHITE;
+    default: return NOCOLOR;
+  }
+}
+
+function squareColor(board, square) {
+  const piece = board.state.pieces[square];
+  return piece ? piece.props.color : NOCOLOR;
+}
+
+function hasFriendlyPiece(board, square, color) {
+  return squareColor(board, square) === color;
+}
+
+function hasOpposingPiece(board, square, color) {
+  return squareColor(board, square) === opposingColor(color);
+}
+
+function isEmptySquare(board, square) {
+  return squareColor(board, square) === NOCOLOR;
+}
 
 class Piece extends Component {
   static availableMoves(board, square, piece) {
@@ -55,7 +81,7 @@ class Knight extends Component {
     var moves = [];
     for (const delta of [[-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1], [-2, -1], [-2, 1]]) {
       let newSquare = squareAdd(square, delta[0], delta[1]);
-      if (squareColor(board, newSquare) !== piece.props.color) {
+      if (!hasFriendlyPiece(board, newSquare, piece.props.color)) {
         moves.push(newSquare);
       }
     }
@@ -73,19 +99,18 @@ class Pawn extends Component {
     var direction = piece.props.color === WHITE ? 1 : -1;
 
     let newSquare = squareAdd(square, 0, direction);
-    if (squareColor(board, newSquare) === undefined) {
+    if (isEmptySquare(board, newSquare)) {
       moves.push(newSquare);
     }
     if ('27'.includes(square[1])) {
       let newSquare = squareAdd(square, 0, direction*2);
-      if (squareColor(board, newSquare) === undefined) {
+      if (isEmptySquare(board, newSquare)) {
         moves.push(newSquare);
       }
     }
     for (const drank of [-1, 1]) {
       let newSquare = squareAdd(square, drank, direction);
-      let opposingColor = piece.props.color === WHITE ? BLACK : WHITE;
-      if (squareColor(board, newSquare) === opposingColor) {
+      if (hasOpposingPiece(board, newSquare, piece.props.color)) {
         moves.push(newSquare);
       }
     }
@@ -102,7 +127,7 @@ class King extends Component {
     var moves = [];
     for (const delta of [[1, 1], [0, 1], [-1, 1], [1, 0], [-1, 0], [1, -1], [0, -1], [-1, -1]]) {
       let newSquare = squareAdd(square, delta[0], delta[1]);
-      if (squareColor(board, newSquare) !== piece.props.color) {
+      if (!hasFriendlyPiece(board, newSquare, piece.props.color)) {
         moves.push(newSquare);
       }
     }
