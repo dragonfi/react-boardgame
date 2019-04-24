@@ -37,7 +37,14 @@ function projectedMove(board, square, direction, color) {
   for(const i of [1, 2, 3, 4, 5, 6, 7]) {
     let dfile = direction[0] * i;
     let drank = direction[1] * i;
-    moves.push(squareAdd(square, dfile, drank));
+    let newSquare = squareAdd(square, dfile, drank);
+    if (hasFriendlyPiece(board, newSquare, color)) {
+      break;
+    }
+    moves.push(newSquare);
+    if (hasOpposingPiece(board, newSquare, color)) {
+      break;
+    }
   }
   console.log("partial:", moves);
   return moves;
