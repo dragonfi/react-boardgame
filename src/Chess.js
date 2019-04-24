@@ -29,9 +29,11 @@ class Chess extends Component {
     this.state.highlighted = [];
     this.state.highlightedSquare = '';
   }
+
   clearHighlights() {
     this.setState({highlightedSquare: '', highlighted: []});
   }
+
   highlightMoves(square, piece) {
     if (!piece) {
       this.setState({highlighted: [], highlightedSquare: ''});
@@ -77,7 +79,7 @@ class Chess extends Component {
   }
 
   renderRank(rank) {
-    return <tr>{files.map(file => this.renderSquare(file, rank))}</tr>
+    return <tr key={rank}>{files.map(file => this.renderSquare(file, rank))}</tr>
   }
 
   renderBoard() {
