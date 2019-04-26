@@ -147,6 +147,24 @@ class King extends Component {
         moves.push(newSquare);
       }
     }
+    if (!board.state.kingMoved.includes(piece.props.color)) {
+      const rank = square[1];
+      let rookSquare = 'a' + rank;
+      let emptySquares = ['b' + rank, 'c' + rank, 'd' + rank];
+      let hasFriendlyRook = hasFriendlyPiece(board, rookSquare, piece.props.color) && board.state.pieces[rookSquare].type === Rook;
+      console.log("castling", hasFriendlyPiece(board, rookSquare, piece.props.color), rookSquare, board.state.pieces[rookSquare].type)
+      console.log("castling", hasFriendlyRook, emptySquares.every((square) => isEmptySquare(board, square)));
+      console.log(board.state.kingMoved);
+      if (hasFriendlyRook && emptySquares.every((square) => isEmptySquare(board, square))) {
+        moves.push(emptySquares[1]);
+      }
+      rookSquare = 'h' + rank;
+      emptySquares = ['f' + rank, 'g' + rank];
+      hasFriendlyRook = hasFriendlyPiece(board, rookSquare, piece.props.color) && board.state.pieces[rookSquare].type === Rook;
+      if (hasFriendlyRook && emptySquares.every((square) => isEmptySquare(board, square))) {
+        moves.push(emptySquares[1]);
+      }
+    }
     return moves;
   }
 
@@ -186,4 +204,4 @@ function pieceFromNotation(code) {
   return React.createElement(pieceClass[code[1]], {color: color});
 }
 
-export {pieceFromNotation, Pawn};
+export {pieceFromNotation, Pawn, King};

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import {files, ranks} from './ChessUtils.js'
-import {pieceFromNotation, Pawn} from './ChessPieces.js';
+import {pieceFromNotation, Pawn, King} from './ChessPieces.js';
 
 import './Chess.css';
 
@@ -29,6 +29,7 @@ class Chess extends Component {
     this.state.highlighted = [];
     this.state.highlightedSquare = '';
     this.state.enPassant = [undefined, undefined];
+    this.state.kingMoved = [];
   }
 
   clearHighlights() {
@@ -49,7 +50,7 @@ class Chess extends Component {
   movePiece(source, destination) {
     var pieces = {...this.state.pieces};
     var piece = pieces[source];
-    var enPassant = false;
+    var enPassant = [undefined, undefined];
     if (piece.type === Pawn) {
       const sRow = source[1];
       const dRow = destination[1];
@@ -64,9 +65,32 @@ class Chess extends Component {
         delete pieces[this.state.enPassant[1]];
       }
     }
+    var kingMoved = [...this.state.kingMoved];
+    if (piece.type === King && !kingMoved.includes(piece.props.color)) {
+      if (destination === 'c1') {
+        console.log("moving rook");
+        pieces['d1'] = pieces['a1'];
+        delete pieces['a1'];
+      }
+      if (destination === 'g1') {
+        pieces['f1'] = pieces['h1'];
+        delete pieces['h1'];
+      }
+      if (destination === 'c8') {
+        console.log("moving rook");
+        pieces['d8'] = pieces['a8'];
+        delete pieces['a8'];
+      }
+      if (destination === 'g8') {
+        pieces['f8'] = pieces['h8'];
+        delete pieces['h8'];
+      }
+      kingMoved.push(piece.props.color);
+    }
     pieces[destination] = piece;
     delete pieces[source];
-    this.setState({pieces: pieces, enPassant: enPassant});
+    this.setState({pieces: pieces, enPassant: enPassant, kingMoved: kingMoved});
+
     this.clearHighlights();
   }
 
