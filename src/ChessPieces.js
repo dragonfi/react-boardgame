@@ -126,6 +126,9 @@ class Pawn extends Component {
       if (hasOpposingPiece(board, newSquare, piece.props.color)) {
         moves.push(newSquare);
       }
+      if (newSquare === board.state.enPassant[0]) {
+        moves.push(newSquare);
+      }
     }
     return moves;
   }
@@ -174,7 +177,7 @@ function reprPiece(code) {
   return reprs[code];
 }
 
-export function pieceFromNotation(code) {
+function pieceFromNotation(code) {
   if (!code || code.length < 2) {
     return;
   }
@@ -182,3 +185,5 @@ export function pieceFromNotation(code) {
   var pieceClass = {'K': King, 'Q': Queen, 'B': Bishop, 'N': Knight, 'R': Rook, 'P': Pawn};
   return React.createElement(pieceClass[code[1]], {color: color});
 }
+
+export {pieceFromNotation, Pawn};

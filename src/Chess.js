@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import {files, ranks} from './ChessUtils.js'
-import {pieceFromNotation} from './ChessPieces.js';
+import {pieceFromNotation, Pawn} from './ChessPieces.js';
 
 import './Chess.css';
 
@@ -28,6 +28,7 @@ class Chess extends Component {
     this.state.pieces = createInitialBoardState();
     this.state.highlighted = [];
     this.state.highlightedSquare = '';
+    this.state.enPassant = [undefined, undefined];
   }
 
   clearHighlights() {
@@ -46,11 +47,26 @@ class Chess extends Component {
   }
 
   movePiece(source, destination) {
-    var pieces = this.state.pieces;
+    var pieces = {...this.state.pieces};
     var piece = pieces[source];
+    var enPassant = false;
+    if (piece.type === Pawn) {
+      const sRow = source[1];
+      const dRow = destination[1];
+      if (sRow === '2' && dRow === '4') {
+        enPassant = [destination[0] + '3', destination];
+      }
+      if (sRow === '7' && dRow === '5') {
+        enPassant = [destination[0] + '6', destination];
+      }
+
+      if (destination === this.state.enPassant[0]) {
+        delete pieces[this.state.enPassant[1]];
+      }
+    }
     pieces[destination] = piece;
     delete pieces[source];
-    this.setState({pieces: pieces});
+    this.setState({pieces: pieces, enPassant: enPassant});
     this.clearHighlights();
   }
 
