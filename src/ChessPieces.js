@@ -113,13 +113,14 @@ class Pawn extends Component {
     let newSquare = squareAdd(square, 0, direction);
     if (isEmptySquare(board, newSquare)) {
       moves.push(newSquare);
-    }
-    if ('27'.includes(square[1])) {
-      let newSquare = squareAdd(square, 0, direction*2);
-      if (isEmptySquare(board, newSquare)) {
-        moves.push(newSquare);
+      if ('27'.includes(square[1])) {
+        let newSquare = squareAdd(square, 0, direction*2);
+        if (isEmptySquare(board, newSquare)) {
+          moves.push(newSquare);
+        }
       }
     }
+
     for (const drank of [-1, 1]) {
       let newSquare = squareAdd(square, drank, direction);
       if (hasOpposingPiece(board, newSquare, piece.props.color)) {
