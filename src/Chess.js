@@ -101,8 +101,8 @@ class Chess extends Component {
         delete pieces[rookSource];
       }
       if (dest.file === 'g') {
-        const rookSource = dest.setFile('f');
-        const rookDest = dest.setFile('h');
+        const rookSource = dest.setFile('h');
+        const rookDest = dest.setFile('f');
         pieces[rookDest] = pieces[rookSource];
         delete pieces[rookSource];
       }
