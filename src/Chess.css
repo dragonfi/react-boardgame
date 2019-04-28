@@ -35,3 +35,11 @@ tr:nth-child(n) td.highlighted {
 tr:nth-child(n) td.highlighted-piece, tr:nth-child(n) td:hover {
   background-color: #666666;
 }
+
+.chess-color-white {
+  color: white;
+}
+
+.chess-color-black {
+  color: black;
+}

@@ -69,8 +69,7 @@ class Rook extends Component {
   }
 
   render() {
-    const figure = this.props.color == WHITE ? '♖' : '♜';
-    return <Piece figure={figure} color={this.props.color} validMoves={this.validMoves}></Piece>
+    return <Piece figure="♜" color={this.props.color} validMoves={this.validMoves}></Piece>
   }
 }
 
@@ -84,11 +83,9 @@ class Bishop extends Component {
   }
 
   render() {
-    const figure = this.props.color == WHITE ? '♗' : '♝';
-    return <Piece figure={figure} color={this.props.color} validMoves={this.validMoves}></Piece>
+    return <Piece figure="♝" color={this.props.color} validMoves={this.validMoves}></Piece>
   }
 }
-
 
 class Knight extends Component {
   static validMoves(board, square, piece) {
@@ -103,8 +100,7 @@ class Knight extends Component {
   }
 
   render() {
-    const figure = this.props.color == WHITE ? '♘' : '♞';
-    return <Piece figure={figure} color={this.props.color} validMoves={this.validMoves}></Piece>
+    return <Piece figure="♞" color={this.props.color} validMoves={this.validMoves}></Piece>
   }
 }
 
@@ -137,8 +133,7 @@ class Pawn extends Component {
   }
 
   render() {
-    const figure = this.props.color == WHITE ? '♙' : '♟';
-    return <Piece figure={figure} color={this.props.color} validMoves={this.validMoves}></Piece>
+    return <Piece figure="♟" color={this.props.color} validMoves={this.validMoves}></Piece>
   }
 }
 
@@ -170,8 +165,7 @@ class King extends Component {
   }
 
   render() {
-    const figure = this.props.color == WHITE ? '♔' : '♚';
-    return <Piece figure={figure} color={this.props.color} validMoves={this.validMoves}></Piece>
+    return <Piece figure="♚" color={this.props.color} validMoves={this.validMoves}></Piece>
   }
 }
 
@@ -185,8 +179,7 @@ class Queen extends Component {
   }
 
   render() {
-    const figure = this.props.color == WHITE ? '♕' : '♛';
-    return <Piece figure={figure} color={this.props.color} validMoves={this.validMoves}></Piece>
+    return <Piece figure="♛" color={this.props.color} validMoves={this.validMoves}></Piece>
   }
 }
 
