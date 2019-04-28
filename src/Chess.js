@@ -68,7 +68,6 @@ class Chess extends Component {
     var kingMoved = [...this.state.kingMoved];
     if (piece.type === King && !kingMoved.includes(piece.props.color)) {
       if (destination === 'c1') {
-        console.log("moving rook");
         pieces['d1'] = pieces['a1'];
         delete pieces['a1'];
       }
@@ -77,7 +76,6 @@ class Chess extends Component {
         delete pieces['h1'];
       }
       if (destination === 'c8') {
-        console.log("moving rook");
         pieces['d8'] = pieces['a8'];
         delete pieces['a8'];
       }

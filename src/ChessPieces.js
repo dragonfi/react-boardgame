@@ -46,7 +46,6 @@ function projectedMove(board, square, direction, color) {
       break;
     }
   }
-  console.log("partial:", moves);
   return moves;
 }
 
@@ -152,9 +151,6 @@ class King extends Component {
       let rookSquare = 'a' + rank;
       let emptySquares = ['b' + rank, 'c' + rank, 'd' + rank];
       let hasFriendlyRook = hasFriendlyPiece(board, rookSquare, piece.props.color) && board.state.pieces[rookSquare].type === Rook;
-      console.log("castling", hasFriendlyPiece(board, rookSquare, piece.props.color), rookSquare, board.state.pieces[rookSquare].type)
-      console.log("castling", hasFriendlyRook, emptySquares.every((square) => isEmptySquare(board, square)));
-      console.log(board.state.kingMoved);
       if (hasFriendlyRook && emptySquares.every((square) => isEmptySquare(board, square))) {
         moves.push(emptySquares[1]);
       }
