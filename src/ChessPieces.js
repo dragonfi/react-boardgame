@@ -200,4 +200,4 @@ function pieceFromNotation(code) {
   return React.createElement(pieceClass[code[1]], {color: color});
 }
 
-export {pieceFromNotation, Pawn, King};
+export {pieceFromNotation, Pawn, King, Rook, Knight, Bishop, Queen};

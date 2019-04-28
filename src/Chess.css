@@ -1,7 +1,14 @@
-table.react-chess-game, th, td {
+table.react-chess-board, th, td, .react-chess-pawn-promotion-selector {
   border: 1px solid black;
   border-collapse: collapse;
   font-size: 2rem;
+}
+
+.react-chess-pawn-promotion-selector {
+  position: absolute;
+  top: 6em;
+  left: 6em;
+  background-color: #dd6666;
 }
 
 td {

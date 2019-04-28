@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import {files, ranks, Position} from './ChessUtils.js'
-import {pieceFromNotation, Pawn, King} from './ChessPieces.js';
+import {pieceFromNotation, Pawn, King, Queen, Rook, Knight, Bishop} from './ChessPieces.js';
 
 import './Chess.css';
 
@@ -21,6 +21,23 @@ function createInitialBoardState() {
   return board;
 }
 
+class PawnPromotionSelector extends Component {
+  render() {
+    const e = window.event;
+    const left = e.clientX + "px";
+    const top = e.clientY + "px";
+    const style = {position: "absolute", top: top, left: left};
+    return (
+      <div className="react-chess-pawn-promotion-selector" style={style}>
+        <div onClick={(e) => this.props.onClick(Queen)}><Queen color={this.props.color}/></div>
+        <div onClick={(e) => this.props.onClick(Bishop)}><Bishop color={this.props.color}/></div>
+        <div onClick={(e) => this.props.onClick(Knight)}><Knight color={this.props.color}/></div>
+        <div onClick={(e) => this.props.onClick(Rook)}><Rook color={this.props.color}/></div>
+      </div>
+    )
+  }
+}
+
 class Chess extends Component {
   constructor(props) {
     super(props);
@@ -30,6 +47,7 @@ class Chess extends Component {
     this.state.highlightedSquare = '';
     this.state.enPassant = [undefined, undefined];
     this.state.kingMoved = [];
+    this.state.promotablePawn = null;
   }
 
   clearHighlights() {
@@ -47,23 +65,31 @@ class Chess extends Component {
     });
   }
 
+  _calculateEnPassant(source, destination) {
+    const sourceRank = new Position(source).rank;
+    const destinationRank = new Position(destination).rank;
+    if (sourceRank === 2 && destinationRank === 4) {
+      return [new Position(destination).setRank(3).toString(), destination];
+    }
+    if (sourceRank === '7' && destinationRank === '5') {
+      return [new Position(destination).setRank(6).toString(), destination];
+    }
+    return [undefined, undefined];
+  }
+
   movePiece(source, destination) {
     var pieces = {...this.state.pieces};
     var piece = pieces[source];
     var enPassant = [undefined, undefined];
+    var promotablePawn = null;
     if (piece.type === Pawn) {
-      const sourceRank = new Position(source).rank;
-      const destinationRank = new Position(destination).rank;
-      if (sourceRank === 2 && destinationRank === 4) {
-        enPassant = [new Position(destination).setRank(3).toString(), destination];
-      }
-      if (sourceRank === '7' && destinationRank === '5') {
-        enPassant = [new Position(destination).setRank(6).toString(), destination];
-      }
-
+      enPassant = this._calculateEnPassant(source, destination);
       if (destination === this.state.enPassant[0]) {
         delete pieces[this.state.enPassant[1]];
       }
+    }
+    if (piece.type === Pawn && [1, 8].includes(new Position(destination).rank)) {
+      promotablePawn = destination;
     }
     var kingMoved = [...this.state.kingMoved];
     if (piece.type === King && !kingMoved.includes(piece.props.color)) {
@@ -84,7 +110,7 @@ class Chess extends Component {
     }
     pieces[destination] = piece;
     delete pieces[source];
-    this.setState({pieces: pieces, enPassant: enPassant, kingMoved: kingMoved});
+    this.setState({pieces: pieces, enPassant: enPassant, kingMoved: kingMoved, promotablePawn: promotablePawn});
 
     this.clearHighlights();
   }
@@ -115,10 +141,33 @@ class Chess extends Component {
     return <tr key={rank}>{files.map(file => this.renderSquare(file, rank))}</tr>
   }
 
+  promotePromotablePawn(pieceType) {
+    const pawn = this.state.pieces[this.state.promotablePawn];
+
+    let pieces = {...this.state.pieces};
+    pieces[this.state.promotablePawn] = React.createElement(pieceType, {color: pawn.props.color});
+
+    this.setState({pieces: pieces, promotablePawn: null});
+  }
+
+  renderPromotionSelector() {
+    const pawn = this.state.pieces[this.state.promotablePawn];
+    if (this.state.promotablePawn) {
+      return <PawnPromotionSelector color={pawn.props.color} onClick={(pieceType) => this.promotePromotablePawn(pieceType)} />
+    }
+    return null;
+  }
+
   renderBoard() {
-    return (<table className="react-chess-game"><tbody>
-      {ranks.map(rank => this.renderRank(rank))}
-    </tbody></table>)
+    return (
+      <div className="react-chess-game">
+        <table className="react-chess-board">
+          <tbody>
+            {ranks.map(rank => this.renderRank(rank))}
+          </tbody>
+        </table>
+        {this.renderPromotionSelector()}
+    </div>)
   }
 
   render() {
