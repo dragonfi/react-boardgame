@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import {squareAdd} from './ChessUtils.js';
+import {Position} from './ChessUtils.js';
 
 const BLACK = "chess-color-black";
 const WHITE = "chess-color-white";
@@ -37,7 +37,7 @@ function projectedMove(board, square, direction, color) {
   for(const i of [1, 2, 3, 4, 5, 6, 7]) {
     let dfile = direction[0] * i;
     let drank = direction[1] * i;
-    let newSquare = squareAdd(square, dfile, drank);
+    let newSquare = new Position(square).offsetFile(dfile).offsetRank(drank).toString();
     if (hasFriendlyPiece(board, newSquare, color)) {
       break;
     }
@@ -91,7 +91,7 @@ class Knight extends Component {
   static validMoves(board, square, piece) {
     var moves = [];
     for (const delta of [[-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1], [-2, -1], [-2, 1]]) {
-      let newSquare = squareAdd(square, delta[0], delta[1]);
+      let newSquare = new Position(square).offsetFile(delta[0]).offsetRank(delta[1]).toString();
       if (!hasFriendlyPiece(board, newSquare, piece.props.color)) {
         moves.push(newSquare);
       }
@@ -109,11 +109,11 @@ class Pawn extends Component {
     var moves = [];
     var direction = piece.props.color === WHITE ? 1 : -1;
 
-    let newSquare = squareAdd(square, 0, direction);
+    let newSquare = new Position(square).offsetFile(0).offsetRank(direction).toString();
     if (isEmptySquare(board, newSquare)) {
       moves.push(newSquare);
       if ('27'.includes(square[1])) {
-        let newSquare = squareAdd(square, 0, direction*2);
+        let newSquare = new Position(square).offsetFile(0).offsetRank(direction*2).toString();
         if (isEmptySquare(board, newSquare)) {
           moves.push(newSquare);
         }
@@ -121,7 +121,7 @@ class Pawn extends Component {
     }
 
     for (const drank of [-1, 1]) {
-      let newSquare = squareAdd(square, drank, direction);
+      let newSquare = new Position(square).offsetFile(drank).offsetRank(direction).toString();
       if (hasOpposingPiece(board, newSquare, piece.props.color)) {
         moves.push(newSquare);
       }
@@ -141,7 +141,7 @@ class King extends Component {
   static validMoves(board, square, piece) {
     var moves = [];
     for (const delta of [[1, 1], [0, 1], [-1, 1], [1, 0], [-1, 0], [1, -1], [0, -1], [-1, -1]]) {
-      let newSquare = squareAdd(square, delta[0], delta[1]);
+      let newSquare = new Position(square).offsetFile(delta[0]).offsetRank(delta[1]).toString();
       if (!hasFriendlyPiece(board, newSquare, piece.props.color)) {
         moves.push(newSquare);
       }

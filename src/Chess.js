@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import {files, ranks} from './ChessUtils.js'
+import {files, ranks, Position} from './ChessUtils.js'
 import {pieceFromNotation, Pawn, King} from './ChessPieces.js';
 
 import './Chess.css';
@@ -52,13 +52,13 @@ class Chess extends Component {
     var piece = pieces[source];
     var enPassant = [undefined, undefined];
     if (piece.type === Pawn) {
-      const sRow = source[1];
-      const dRow = destination[1];
-      if (sRow === '2' && dRow === '4') {
-        enPassant = [destination[0] + '3', destination];
+      const sourceRank = new Position(source).rank;
+      const destinationRank = new Position(destination).rank;
+      if (sourceRank === 2 && destinationRank === 4) {
+        enPassant = [new Position(destination).setRank(3).toString(), destination];
       }
-      if (sRow === '7' && dRow === '5') {
-        enPassant = [destination[0] + '6', destination];
+      if (sourceRank === '7' && destinationRank === '5') {
+        enPassant = [new Position(destination).setRank(6).toString(), destination];
       }
 
       if (destination === this.state.enPassant[0]) {
@@ -67,21 +67,18 @@ class Chess extends Component {
     }
     var kingMoved = [...this.state.kingMoved];
     if (piece.type === King && !kingMoved.includes(piece.props.color)) {
-      if (destination === 'c1') {
-        pieces['d1'] = pieces['a1'];
-        delete pieces['a1'];
+      const dest = new Position(destination);
+      if (dest.file === 'c') {
+        const rookSource = dest.setFile('a');
+        const rookDest = dest.setFile('d');
+        pieces[rookDest] = pieces[rookSource];
+        delete pieces[rookSource];
       }
-      if (destination === 'g1') {
-        pieces['f1'] = pieces['h1'];
-        delete pieces['h1'];
-      }
-      if (destination === 'c8') {
-        pieces['d8'] = pieces['a8'];
-        delete pieces['a8'];
-      }
-      if (destination === 'g8') {
-        pieces['f8'] = pieces['h8'];
-        delete pieces['h8'];
+      if (dest.file === 'g') {
+        const rookSource = dest.setFile('f');
+        const rookDest = dest.setFile('h');
+        pieces[rookDest] = pieces[rookSource];
+        delete pieces[rookSource];
       }
       kingMoved.push(piece.props.color);
     }
