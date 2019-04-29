@@ -71,7 +71,7 @@ class Chess extends Component {
     if (sourceRank === 2 && destinationRank === 4) {
       return [new Position(destination).setRank(3).toString(), destination];
     }
-    if (sourceRank === '7' && destinationRank === '5') {
+    if (sourceRank === 7 && destinationRank === 5) {
       return [new Position(destination).setRank(6).toString(), destination];
     }
     return [undefined, undefined];

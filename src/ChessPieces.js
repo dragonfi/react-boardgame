@@ -125,7 +125,7 @@ class Pawn extends Component {
       if (hasOpposingPiece(board, newSquare, piece.props.color)) {
         moves.push(newSquare);
       }
-      if (newSquare === board.state.enPassant[0]) {
+      if (newSquare === board.state.enPassant[0] && hasOpposingPiece(board, board.state.enPassant[1], piece.props.color)) {
         moves.push(newSquare);
       }
     }
