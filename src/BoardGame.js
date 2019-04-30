@@ -69,8 +69,6 @@ class BoardGame extends Component {
       highlightedPiece: '',
       highlightedMoves: [],
     };
-
-    // this.state.pieces = pro();
     // this.state.enPassant = [undefined, undefined];
     // this.state.kingMoved = [];
     // this.state.promotablePawn = null;
@@ -97,7 +95,7 @@ class BoardGame extends Component {
   _movePiece(newSquare) {
     const square = this.state.highlightedPiece;
     const piece = this.state.board.pieces[square];
-    const newBoard = this.props.rules.pieces[piece.pieceType].move(this.state.board, square, newSquare);
+    const newBoard = this.props.rules.pieces[piece.pieceType].movePiece(this.state.board, square, newSquare);
     this.setState({
       board: newBoard,
       highlightedMoves: [],

@@ -27,23 +27,27 @@ function turnOrder(board) {
   }
 }
 
-function validPawnMoves(board, square) {
-  const piece = board.pieces[square];
-  const side = piece.color;
+class PawnRules {
+  static figure = "♟";
 
-  const direction = side === WHITE ? 1 : -1;
-  const validMoves = [new Position(square).offsetRank(direction).toString()];
+  static validMoves(board, square) {
+    const piece = board.pieces[square];
+    const side = piece.color;
 
-  return validMoves;
-}
+    const direction = side === WHITE ? 1 : -1;
+    const validMoves = [new Position(square).offsetRank(direction).toString()];
 
-function movePawn(board, square, newSquare) {
-  const pieces = {...board.pieces};
-  const piece = board.pieces[square];
-  pieces[newSquare] = piece;
-  delete pieces[square];
+    return validMoves;
+  }
 
-  return {...board, pieces: pieces};
+  static movePiece(board, square, newSquare) {
+    const pieces = {...board.pieces};
+    const piece = board.pieces[square];
+    pieces[newSquare] = piece;
+    delete pieces[square];
+
+    return {...board, pieces: pieces};
+  }
 }
 
 function initialBoardState() {
@@ -64,11 +68,7 @@ const rules = {
   turnOrder: turnOrder,
   initialBoardState: initialBoardState,
   pieces: {
-    [PAWN]: {
-      validMoves: validPawnMoves,
-      move: movePawn,
-      figure: "♟",
-    }
+    [PAWN]: PawnRules,
   }
 }
 
