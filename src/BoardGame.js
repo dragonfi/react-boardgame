@@ -31,28 +31,21 @@ class Board extends Component {
   }
 
   _renderSquare(file, rank) {
-    var square = new Position("a1").setFile(file).setRank(rank);
-    var piece = this.props.pieces[square];
-    var figure = piece ? piece.figure : null;
-    var color = piece ? piece.color : null;
-    /*var highlighted = '';
-    if (this.state.highlighted.includes(square)) {
-      highlighted = 'highlighted';
-    }
-    if (this.state.highlightedSquare === square) {
-      highlighted = 'highlighted-piece';
-    }
-    var onClick = (e) => this.handleOnClick(square, piece);*/
-    return <Square square={square.toString()} figure={figure} color={color} />
+    const square = new Position("a1").setFile(file).setRank(rank);
+    const piece = this.props.pieces[square];
+    const figure = piece ? piece.figure : null;
+    const color = piece ? piece.color : null;
+    const isHighlighted = this.props.highlightedSquares.includes(square.toString());
+    return <Square square={square.toString()} figure={figure} color={color} isHighlighted={isHighlighted} onClick={this.props.onSquareClick} />
   }
 }
 
 class Square extends Component {
   render() {
     const square = this.props.square;
-    console.log(this.props);
+    const isHighlighted = this.props.isHighlighted ? "react-boardgame__square--highlighted" : "";
     return (
-      <td className="react-boardgame__square" title={square} key={square}>
+      <td className={"react-boardgame__square " + isHighlighted} title={square} key={square} onClick={(_) => this.props.onClick(square)}>
         <div className={"react-boardgame__piece " + this.props.color}>{this.props.figure}</div>
       </td>
     )
@@ -73,28 +66,61 @@ class BoardGame extends Component {
     super(props);
     this.state = {
       board: rules.initialBoardState(),
+      highlightedPiece: '',
+      highlightedMoves: [],
     };
 
     // this.state.pieces = pro();
-    // this.state.highlighted = [];
-    // this.state.highlightedSquare = '';
     // this.state.enPassant = [undefined, undefined];
     // this.state.kingMoved = [];
     // this.state.promotablePawn = null;
   }
   _pieceRepresentation(piece) {
     return {
+      ...piece,
       figure: this.props.rules.pieces[piece.pieceType].figure,
-      color: piece.color,
     }
   }
+
+  _highlightMoves(square) {
+    const piece = this.state.board.pieces[square];
+    if (!piece) {
+      this.setState({highlightedMoves: [], highlightedPiece: ''});
+      return;
+    }
+    this.setState({
+      highlightedMoves: this.props.rules.pieces[piece.pieceType].validMoves(this.state.board, square),
+      highlightedPiece: square,
+    });
+  }
+
+  _movePiece(newSquare) {
+    const square = this.state.highlightedPiece;
+    const piece = this.state.board.pieces[square];
+    const newBoard = this.props.rules.pieces[piece.pieceType].move(this.state.board, square, newSquare);
+    this.setState({
+      board: newBoard,
+      highlightedMoves: [],
+      highlightedPiece: '',
+    });
+  }
+
+  _onSquareClick(square) {
+    if (this.state.highlightedMoves.includes(square)) {
+      this._movePiece(square);
+    } else {
+      this._highlightMoves(square);
+    }
+  }
+
   render() {
     const boardRules = this.props.rules.board;
     const pieces = this.state.board.pieces;
     const pieceReprs = mapValues(pieces, (v) => this._pieceRepresentation(v));
+    const highlightedSquares = [...this.state.highlightedMoves, this.state.highlightedPiece];
     return (
       <div className="react-boardgame">
-        <Board shape={boardRules} pieces={pieceReprs}/>
+        <Board shape={boardRules} pieces={pieceReprs} highlightedSquares={highlightedSquares} onSquareClick={this._onSquareClick.bind(this)}/>
       </div>
     )
   }

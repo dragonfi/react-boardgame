@@ -28,7 +28,8 @@ tr:nth-child(2n) td:nth-child(2n+1) {
   background-color: #dd6666;
 }
 
-tr:nth-child(n) td.highlighted {
+tr:nth-child(n) td.highlighted,
+tr:nth-child(n) td.react-boardgame__square--highlighted {
   background-color: #999999;
 }
 
