@@ -6,8 +6,8 @@ table.react-chess-board, th, td, .react-chess-pawn-promotion-selector {
 
 .react-chess-pawn-promotion-selector {
   position: absolute;
-  top: 6em;
-  left: 6em;
+  top: 6rem;
+  left: 6rem;
   background-color: #dd6666;
 }
 
