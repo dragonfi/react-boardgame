@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import Chess from './Chess.js';
+import {BoardGame} from './BoardGame.js';
+import {rules as chessRules} from './ChessRules';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <Chess></Chess>
+        <BoardGame rules={chessRules}></BoardGame>
       </div>
     );
   }

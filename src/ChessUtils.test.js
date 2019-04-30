@@ -1,4 +1,4 @@
-import {Position} from './ChessUtils';
+import {rankRange, fileRange, Position} from './ChessUtils';
 
 it('poisition can be created', () => {
   const p = new Position('a1');
@@ -29,4 +29,12 @@ it('setRank and setFile creates new Position', () => {
 
   expect(p.rank).toBe(3);
   expect(p.file).toBe('c');
+});
+
+it('rankRange properly returns reverse range for size of 8', () => {
+  expect(rankRange(8)).toEqual([8, 7, 6, 5, 4, 3, 2, 1]);
+});
+
+it('fileRange properly returns letter range for size of 8', () => {
+  expect(fileRange(8)).toEqual(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']);
 });

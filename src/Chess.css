@@ -36,10 +36,10 @@ tr:nth-child(n) td.highlighted-piece, tr:nth-child(n) td:hover {
   background-color: #666666;
 }
 
-.chess-color-white {
+.chess-color-white, .react-chess-color-white {
   color: white;
 }
 
-.chess-color-black {
+.chess-color-black, .react-chess-color-black {
   color: black;
 }

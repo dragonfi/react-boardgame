@@ -2,6 +2,14 @@
 const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const ranks = [8, 7, 6, 5, 4, 3, 2, 1];
 
+function rankRange(count) {
+  return Array.from({length: count}, (_, i) => count - i);
+}
+
+function fileRange(count) {
+  return Array.from({length: count}, (_, i) => String.fromCharCode("a".charCodeAt(0) + i));
+}
+
 class Position {
   constructor(fromString) {
     this.file = this._fileFromString(fromString);
@@ -26,6 +34,7 @@ class Position {
     const newFile = String.fromCharCode(this.file.charCodeAt(0) + deltaFile);
     return this.copy().setFile(newFile);
   }
+
   setFile(newFile) {
     var p = this.copy();
     p.file = newFile;
@@ -41,4 +50,4 @@ class Position {
   }
 }
 
-export {files, ranks, Position};
+export {files, ranks, rankRange, fileRange, Position};
