@@ -205,10 +205,6 @@ class KingRules {
     const pieces = {...board.pieces};
     const piece = board.pieces[square];
     const _square = new Position(square);
-
-    board.canShortCastle[piece.color] = false;
-    board.canLongCastle[piece.color] = false;
-
     const dest = new Position(newSquare);
 
     if (board.canLongCastle[piece.color] && dest.file === 'c') {
@@ -227,6 +223,9 @@ class KingRules {
 
     pieces[newSquare] = piece;
     delete pieces[square];
+
+    board.canShortCastle[piece.color] = false;
+    board.canLongCastle[piece.color] = false;
 
     return {
       ...board,
