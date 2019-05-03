@@ -38,6 +38,24 @@ function isEmptySquare(board, square) {
   return squareColor(board, square) === NOCOLOR;
 }
 
+
+function projectedMove(board, square, direction, color) {
+  let moves = [];
+  for(const i of [1, 2, 3, 4, 5, 6, 7]) {
+    const dfile = direction[0] * i;
+    const drank = direction[1] * i;
+    const newSquare = new Position(square).offsetFile(dfile).offsetRank(drank).toString();
+    if (hasFriendlyPiece(board, newSquare, color)) {
+      break;
+    }
+    moves.push(newSquare);
+    if (hasOpposingPiece(board, newSquare, color)) {
+      break;
+    }
+  }
+  return moves;
+}
+
 function turnOrder(board) {
   switch (board.activeSide) {
     case WHITE:
@@ -217,6 +235,39 @@ class KingRules {
   }
 }
 
+class RookRules {
+  static figure = "♜";
+  static validMoves(board, square) {
+    const piece = board.pieces[square];
+    let validMoves = [];
+    for (const direction of [[0, 1], [1, 0], [0, -1], [-1, 0]]) {
+      validMoves = validMoves.concat(projectedMove(board, square, direction, piece.color));
+    }
+    return validMoves;
+  }
+
+  static movePiece(board, square, newSquare) {
+    const pieces = {...board.pieces};
+    const piece = board.pieces[square];
+    const _square = new Position(square);
+
+    if (_square.file === 'a') {
+      board.canLongCastle[piece.color] = false;
+    }
+    if (_square.file === 'h') {
+      board.canShortCastle[piece.color] = false;
+    }
+
+    pieces[newSquare] = piece;
+    delete pieces[square];
+
+    return {
+      ...board,
+      pieces: pieces,
+    };
+  }
+}
+
 function initialBoardState() {
   return {
     pieces: {
@@ -230,6 +281,10 @@ function initialBoardState() {
       "b5": {pieceType: PAWN, color: WHITE},
       "e1": {pieceType: KING, color: WHITE},
       "e8": {pieceType: KING, color: BLACK},
+      "a1": {pieceType: ROOK, color: WHITE},
+      "h1": {pieceType: ROOK, color: WHITE},
+      "a8": {pieceType: ROOK, color: BLACK},
+      "h8": {pieceType: ROOK, color: BLACK},
     },
     activeSide: WHITE,
     availableEnPassant: {
@@ -255,6 +310,7 @@ const rules = {
   pieces: {
     [PAWN]: PawnRules,
     [KING]: KingRules,
+    [ROOK]: RookRules,
   },
   selectors: [PawnPromotionSelector],
 }
