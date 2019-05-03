@@ -234,12 +234,12 @@ class KingRules {
   }
 }
 
-class RookRules {
-  static figure = "♜";
+class ProjectingPieceMoves {
+  static directions = [];
   static validMoves(board, square) {
     const piece = board.pieces[square];
     let validMoves = [];
-    for (const direction of [[0, 1], [1, 0], [0, -1], [-1, 0]]) {
+    for (const direction of this.directions) {
       validMoves = validMoves.concat(projectedMove(board, square, direction, piece.color));
     }
     return validMoves;
@@ -247,76 +247,42 @@ class RookRules {
 
   static movePiece(board, square, newSquare) {
     const pieces = {...board.pieces};
+    const piece = board.pieces[square];
+
+    pieces[newSquare] = piece;
+    delete pieces[square];
+
+    return {...board, pieces: pieces};
+  }
+}
+
+class RookRules extends ProjectingPieceMoves {
+  static figure = "♜";
+  static directions = [[0, 1], [1, 0], [0, -1], [-1, 0]];
+
+  static movePiece(board, square, newSquare) {
+    const newBoard = super.movePiece(board, square, newSquare);
     const piece = board.pieces[square];
     const _square = new Position(square);
 
     if (_square.file === 'a') {
-      board.canLongCastle[piece.color] = false;
+      newBoard.canLongCastle[piece.color] = false;
     }
     if (_square.file === 'h') {
-      board.canShortCastle[piece.color] = false;
+      newBoard.canShortCastle[piece.color] = false;
     }
-
-    pieces[newSquare] = piece;
-    delete pieces[square];
-
-    return {
-      ...board,
-      pieces: pieces,
-    };
+    return newBoard;
   }
 }
 
-class BishopRules {
+class BishopRules extends ProjectingPieceMoves {
   static figure = "♝";
-
-  static validMoves(board, square) {
-    const piece = board.pieces[square];
-    let validMoves = [];
-    for (const direction of [[1, 1], [-1, 1], [1, -1], [-1, -1]]) {
-      validMoves = validMoves.concat(projectedMove(board, square, direction, piece.color));
-    }
-    return validMoves;
-  }
-
-  static movePiece(board, square, newSquare) {
-    const pieces = {...board.pieces};
-    const piece = board.pieces[square];
-
-    pieces[newSquare] = piece;
-    delete pieces[square];
-
-    return {
-      ...board,
-      pieces: pieces,
-    };
-  }
+  static directions = [[1, 1], [-1, 1], [1, -1], [-1, -1]];
 }
 
-class QueenRules {
+class QueenRules extends ProjectingPieceMoves {
   static figure = "♛";
-
-  static validMoves(board, square) {
-    const piece = board.pieces[square];
-    let validMoves = [];
-    for (const direction of [[0, 1], [1, 0], [0, -1], [-1, 0], [1, 1], [-1, 1], [1, -1], [-1, -1]]) {
-      validMoves = validMoves.concat(projectedMove(board, square, direction, piece.color));
-    }
-    return validMoves;
-  }
-
-  static movePiece(board, square, newSquare) {
-    const pieces = {...board.pieces};
-    const piece = board.pieces[square];
-
-    pieces[newSquare] = piece;
-    delete pieces[square];
-
-    return {
-      ...board,
-      pieces: pieces,
-    };
-  }
+  static directions = [[0, 1], [1, 0], [0, -1], [-1, 0], [1, 1], [-1, 1], [1, -1], [-1, -1]];
 }
 
 class KnightRules {
