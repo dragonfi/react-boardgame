@@ -75,10 +75,10 @@ class PawnRules {
       if (hasOpposingPiece(board, newSquare, piece.color)) {
         validMoves.push(newSquare);
       }
-      /*
-      if (newSquare === board.state.enPassant[0] && hasOpposingPiece(board, board.state.enPassant[1], piece.props.color)) {
+
+      if (newSquare === board.availableEnPassant.captureMove && hasOpposingPiece(board, board.availableEnPassant.captureablePiece, piece.color)) {
         validMoves.push(newSquare);
-      }*/
+      }
     }
     return validMoves;
   }
@@ -86,22 +86,40 @@ class PawnRules {
   static movePiece(board, square, newSquare) {
     const pieces = {...board.pieces};
     const piece = board.pieces[square];
+    const direction = piece.color === WHITE ? 1 : -1;
+    const _square = new Position(square);
+    const  _newSquare = new Position(newSquare);
+
+    const isDoubleMove = ([2, 7].includes(_square.rank) && [4, 5].includes(_newSquare.rank));
+    const availableEnPassant = {
+      captureMove: isDoubleMove ? _square.offsetRank(direction).toString() : null,
+      captureablePiece: isDoubleMove ? _newSquare.toString(): null,
+    }
+
     pieces[newSquare] = piece;
     delete pieces[square];
 
-    return {...board, pieces: pieces};
+    return {...board, availableEnPassant: availableEnPassant, pieces: pieces};
   }
 }
 
 function initialBoardState() {
   return {
     pieces: {
-      "a1": {pieceType: PAWN, color: WHITE},
-      "b1": {pieceType: PAWN, color: WHITE},
-      "c1": {pieceType: PAWN, color: WHITE},
-      "b3": {pieceType: PAWN, color: BLACK},
+      "a2": {pieceType: PAWN, color: WHITE},
+      "b2": {pieceType: PAWN, color: WHITE},
+      "c2": {pieceType: PAWN, color: WHITE},
+      "b4": {pieceType: PAWN, color: BLACK},
+      "a7": {pieceType: PAWN, color: BLACK},
+      "b7": {pieceType: PAWN, color: BLACK},
+      "c7": {pieceType: PAWN, color: BLACK},
+      "b5": {pieceType: PAWN, color: WHITE},
     },
     activeSide: WHITE,
+    availableEnPassant: {
+      captureMove: null,
+      captureablePiece: null,
+    }
   }
 }
 
