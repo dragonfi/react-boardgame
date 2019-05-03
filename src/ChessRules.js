@@ -36,8 +36,30 @@ class PawnRules {
 
     const direction = side === WHITE ? 1 : -1;
     const validMoves = [new Position(square).offsetRank(direction).toString()];
+    /*
+    if (isEmptySquare(board, newSquare)) {
+      validMoves.push(newSquare);
+      if ([2, 7].includes(new Position(square).file)) {
+        const newSquare = new Position(square).offsetFile(0).offsetRank(direction*2).toString();
+        if (isEmptySquare(board, newSquare)) {
+          validMoves.push(newSquare);
+        }
+      }
+    }
 
+    for (const drank of [-1, 1]) {
+      const newSquare = new Position(square).offsetFile(drank).offsetRank(direction).toString();
+      if (hasOpposingPiece(board, newSquare, piece.props.color)) {
+        validMoves.push(newSquare);
+      }
+      if (newSquare === board.state.enPassant[0] && hasOpposingPiece(board, board.state.enPassant[1], piece.props.color)) {
+        validMoves.push(newSquare);
+      }
+    }*/
     return validMoves;
+  }
+
+
   }
 
   static movePiece(board, square, newSquare) {
