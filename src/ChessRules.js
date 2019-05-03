@@ -30,6 +30,10 @@ function hasOpposingPiece(board, square, color) {
   return squareColor(board, square) === opposingColor(color);
 }
 
+function hasFriendlyPiece(board, square, color) {
+  return squareColor(board, square) === color;
+}
+
 function isEmptySquare(board, square) {
   return squareColor(board, square) === NOCOLOR;
 }
@@ -115,6 +119,37 @@ class PawnRules {
   }
 }
 
+class KingRules {
+  static figure = '♚';
+  static validMoves(board, square) {
+    const piece = board.pieces[square];
+
+    const validMoves = [];
+    for (const [dFile, dRank] of [[1, 1], [0, 1], [-1, 1], [1, 0], [-1, 0], [1, -1], [0, -1], [-1, -1]]) {
+      const newSquare = new Position(square).offsetFile(dFile).offsetRank(dRank).toString();
+      if (!hasFriendlyPiece(board, newSquare, piece.color)) {
+        validMoves.push(newSquare);
+      }
+    }
+
+    return validMoves;
+  }
+
+  static movePiece(board, square, newSquare) {
+    const pieces = {...board.pieces};
+    const piece = board.pieces[square];
+    const _square = new Position(square);
+
+    pieces[newSquare] = piece;
+    delete pieces[square];
+
+    return {
+      ...board,
+      pieces: pieces};
+  }
+
+}
+
 function initialBoardState() {
   return {
     pieces: {
@@ -126,6 +161,8 @@ function initialBoardState() {
       "b7": {pieceType: PAWN, color: BLACK},
       "c7": {pieceType: PAWN, color: BLACK},
       "b5": {pieceType: PAWN, color: WHITE},
+      "h1": {pieceType: KING, color: WHITE},
+      "h8": {pieceType: KING, color: BLACK},
     },
     activeSide: WHITE,
     availableEnPassant: {
@@ -142,6 +179,7 @@ const rules = {
   initialBoardState: initialBoardState,
   pieces: {
     [PAWN]: PawnRules,
+    [KING]: KingRules,
   }
 }
 
