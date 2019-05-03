@@ -173,9 +173,7 @@ class KingRules {
     }
 
     const _square = new Position(square);
-    console.log(board.canLongCastle);
     if (board.canLongCastle[piece.color]) {
-      console.log("long castling");
       const emptySquares = [-1, -2, -3].map(
         (offset) => _square.offsetFile(offset).toString()
       );
