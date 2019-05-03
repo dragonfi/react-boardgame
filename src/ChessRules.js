@@ -170,7 +170,7 @@ class KingRules {
       }
     }
 
-    if (board.canLongCastle[piece.color]) {
+    if (board.canShortCastle[piece.color]) {
       const emptySquares = [1, 2].map(
         (offset) => _square.offsetFile(offset).toString()
       );
