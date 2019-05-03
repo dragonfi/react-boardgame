@@ -32,7 +32,7 @@ class Board extends Component {
     const figure = piece ? piece.figure : null;
     const color = piece ? piece.color : null;
     const isHighlighted = this.props.highlightedSquares.includes(square.toString());
-    return <Square square={square.toString()} figure={figure} color={color} isHighlighted={isHighlighted} onClick={this.props.onSquareClick} />
+    return <Square square={square.toString()} key={square.toString()} figure={figure} color={color} isHighlighted={isHighlighted} onClick={this.props.onSquareClick} />
   }
 }
 

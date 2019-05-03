@@ -38,7 +38,6 @@ function isEmptySquare(board, square) {
   return squareColor(board, square) === NOCOLOR;
 }
 
-
 function projectedMove(board, square, direction, color) {
   let moves = [];
   for(const i of [1, 2, 3, 4, 5, 6, 7]) {
@@ -60,10 +59,8 @@ function turnOrder(board) {
   switch (board.activeSide) {
     case WHITE:
       return board.promotablePawn ? WHITE_PROMOTE : BLACK;
-      break;
     case BLACK:
       return board.promotablePawn ? BLACK_PROMOTE : WHITE;
-      break;
     default:
       return WHITE;
   }
@@ -150,7 +147,7 @@ class PawnRules {
   }
 
   static _isLastRow(square, color) {
-    return (color === WHITE && square.rank === 8 || color === BLACK && square.rank === 1);
+    return (color === WHITE && square.rank === 8) || (color === BLACK && square.rank === 1);
   }
 
   static _isValidEnPassant(board, square, color) {
@@ -204,7 +201,6 @@ class KingRules {
   static movePiece(board, square, newSquare) {
     const pieces = {...board.pieces};
     const piece = board.pieces[square];
-    const _square = new Position(square);
     const dest = new Position(newSquare);
 
     if (board.canLongCastle[piece.color] && dest.file === 'c') {
@@ -382,9 +378,6 @@ const rules = {
   selectors: [PawnPromotionSelector],
 }
 
-const misc = {
-'wK': '♔', 'wQ': '♕', 'wR': '♖', 'wB': '♗', 'wN': '♘', 'wP': '♙',
-'bK': '♚', 'bQ': '♛', 'bR': '♜', 'bB': '♝', 'bN': '♞', 'bP': '♟',
-}
+// Piece figures: ♔♕♖♗♘♙♚♛♜♝♞♟
 
 export {rules};
