@@ -294,6 +294,35 @@ class BishopRules {
   }
 }
 
+class KnightRules {
+  static figure = "♞";
+
+  static validMoves(board, square) {
+    const piece = board.pieces[square];
+    let validMoves = [];
+    for (const [dRank, dFile] of [[-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1], [-2, -1], [-2, 1]]) {
+      let newSquare = new Position(square).offsetFile(dFile).offsetRank(dRank).toString();
+      if (!hasFriendlyPiece(board, newSquare, piece.color)) {
+        validMoves.push(newSquare);
+      }
+    }
+    return validMoves;
+  }
+
+  static movePiece(board, square, newSquare) {
+    const pieces = {...board.pieces};
+    const piece = board.pieces[square];
+
+    pieces[newSquare] = piece;
+    delete pieces[square];
+
+    return {
+      ...board,
+      pieces: pieces,
+    };
+  }
+}
+
 function initialBoardState() {
   return {
     pieces: {
@@ -323,7 +352,10 @@ function initialBoardState() {
       "f1": {pieceType: BISHOP, color: WHITE},
       "c8": {pieceType: BISHOP, color: BLACK},
       "f8": {pieceType: BISHOP, color: BLACK},
-
+      "b1": {pieceType: KNIGHT, color: WHITE},
+      "g1": {pieceType: KNIGHT, color: WHITE},
+      "b8": {pieceType: KNIGHT, color: BLACK},
+      "g8": {pieceType: KNIGHT, color: BLACK},
     },
     activeSide: WHITE,
     availableEnPassant: {
@@ -351,6 +383,7 @@ const rules = {
     [KING]: KingRules,
     [ROOK]: RookRules,
     [BISHOP]: BishopRules,
+    [KNIGHT]: KnightRules,
   },
   selectors: [PawnPromotionSelector],
 }
