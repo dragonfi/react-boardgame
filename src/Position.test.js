@@ -1,4 +1,4 @@
-import {rankRange, fileRange, Position} from './ChessUtils';
+import {rankRange, fileRange, Position} from './Position';
 
 it('poisition can be created', () => {
   const p = new Position('a1');

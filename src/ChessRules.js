@@ -1,4 +1,4 @@
-import {Position} from './ChessUtils.js'
+import {Position} from './Position.js'
 
 const WHITE = "react-chess-color-white";
 const BLACK = "react-chess-color-black";

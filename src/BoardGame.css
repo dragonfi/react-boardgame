@@ -1,10 +1,10 @@
-table.react-chess-board, th, td, .react-chess-pawn-promotion-selector, .react-boardgame__piece-selector {
+.react-boardgame__square, .react-boardgame__piece-selector {
   border: 1px solid black;
   border-collapse: collapse;
   font-size: 2rem;
 }
 
-.react-chess-pawn-promotion-selector, .react-boardgame__piece-selector {
+.react-boardgame__piece-selector {
   position: absolute;
   top: 6rem;
   left: 6rem;
@@ -28,19 +28,18 @@ tr:nth-child(2n) td:nth-child(2n+1) {
   background-color: #dd6666;
 }
 
-tr:nth-child(n) td.highlighted,
 tr:nth-child(n) td.react-boardgame__square--highlighted {
   background-color: #999999;
 }
 
-tr:nth-child(n) td.highlighted-piece, tr:nth-child(n) td:hover {
+tr:nth-child(n) td:hover {
   background-color: #666666;
 }
 
-.chess-color-white, .react-chess-color-white {
+.react-chess-color-white {
   color: white;
 }
 
-.chess-color-black, .react-chess-color-black {
+.react-chess-color-black {
   color: black;
 }

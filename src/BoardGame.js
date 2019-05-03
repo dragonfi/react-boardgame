@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
-import {rankRange, fileRange, Position} from "./ChessUtils.js"
+import {rankRange, fileRange, Position} from "./Position.js"
 
- import './Chess.css';
+ import './BoardGame.css';
 
 class Board extends Component {
   // props: shape, pieces
