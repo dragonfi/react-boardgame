@@ -39,7 +39,6 @@ function isEmptySquare(board, square) {
 }
 
 function turnOrder(board) {
-  const side = board.activeSide;
   switch (board.activeSide) {
     case WHITE:
       return board.promotablePawn ? WHITE_PROMOTE : BLACK;
@@ -49,6 +48,22 @@ function turnOrder(board) {
       break;
     default:
       return WHITE;
+  }
+}
+
+class PawnPromotionSelector {
+  static condition(board) {
+    return !!board.promotablePawn;
+  }
+  static options(board) {
+    const color = board.pieces[board.promotablePawn].color;
+    return [
+      {pieceType: KING, color: color},
+    ];
+  }
+  static handleResult(board, result) {
+    const pieces = {...board.pieces, [board.promotablePawn]: result};
+    return {...board, pieces: pieces, promotablePawn: null};
   }
 }
 
@@ -107,7 +122,17 @@ class PawnRules {
       delete pieces[board.availableEnPassant.captureablePiece];
     }
 
-    return {...board, availableEnPassant: availableEnPassant, pieces: pieces};
+    const promotablePawn = [1, 8].includes(_newSquare.rank) ? newSquare : null;
+
+    return {
+      ...board,
+      availableEnPassant: availableEnPassant,
+      promotablePawn: promotablePawn,
+      pieces: pieces};
+  }
+
+  static _isLastRow(square, color) {
+    return (color === WHITE && square.rank === 8 || color === BLACK && square.rank === 1);
   }
 
   static _isValidEnPassant(board, square, color) {
@@ -120,7 +145,7 @@ class PawnRules {
 }
 
 class KingRules {
-  static figure = '♚';
+  static figure = "♚";
   static validMoves(board, square) {
     const piece = board.pieces[square];
 
@@ -180,7 +205,8 @@ const rules = {
   pieces: {
     [PAWN]: PawnRules,
     [KING]: KingRules,
-  }
+  },
+  selectors: [PawnPromotionSelector],
 }
 
 const misc = {

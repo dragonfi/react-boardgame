@@ -1,10 +1,10 @@
-table.react-chess-board, th, td, .react-chess-pawn-promotion-selector {
+table.react-chess-board, th, td, .react-chess-pawn-promotion-selector, .react-boardgame__piece-selector {
   border: 1px solid black;
   border-collapse: collapse;
   font-size: 2rem;
 }
 
-.react-chess-pawn-promotion-selector {
+.react-chess-pawn-promotion-selector, .react-boardgame__piece-selector {
   position: absolute;
   top: 6rem;
   left: 6rem;
