@@ -13,9 +13,21 @@ const BISHOP = Symbol("bishop");
 const QUEEN = Symbol("queen");
 const KING = Symbol("king");
 
+function opposingColor(color) {
+  switch (color) {
+    case WHITE: return BLACK;
+    case BLACK: return WHITE;
+    default: return NOCOLOR;
+  }
+}
+
 function squareColor(board, square) {
   const piece = board.pieces[square];
   return piece ? piece.color : NOCOLOR;
+}
+
+function hasOpposingPiece(board, square, color) {
+  return squareColor(board, square) === opposingColor(color);
 }
 
 function isEmptySquare(board, square) {
@@ -57,16 +69,17 @@ class PawnRules {
         }
       }
     }
-    /*
+
     for (const drank of [-1, 1]) {
       const newSquare = new Position(square).offsetFile(drank).offsetRank(direction).toString();
-      if (hasOpposingPiece(board, newSquare, piece.props.color)) {
+      if (hasOpposingPiece(board, newSquare, piece.color)) {
         validMoves.push(newSquare);
       }
+      /*
       if (newSquare === board.state.enPassant[0] && hasOpposingPiece(board, board.state.enPassant[1], piece.props.color)) {
         validMoves.push(newSquare);
-      }
-    }*/
+      }*/
+    }
     return validMoves;
   }
 
