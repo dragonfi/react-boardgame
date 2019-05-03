@@ -76,7 +76,7 @@ class PawnRules {
         validMoves.push(newSquare);
       }
 
-      if (newSquare === board.availableEnPassant.captureMove && hasOpposingPiece(board, board.availableEnPassant.captureablePiece, piece.color)) {
+      if (this._isValidEnPassant(board, newSquare, side)) {
         validMoves.push(newSquare);
       }
     }
@@ -99,7 +99,19 @@ class PawnRules {
     pieces[newSquare] = piece;
     delete pieces[square];
 
+    if (board.availableEnPassant && board.availableEnPassant.captureMove === newSquare) {
+      delete pieces[board.availableEnPassant.captureablePiece];
+    }
+
     return {...board, availableEnPassant: availableEnPassant, pieces: pieces};
+  }
+
+  static _isValidEnPassant(board, square, color) {
+    return (
+      board.availableEnPassant &&
+      square === board.availableEnPassant.captureMove &&
+      hasOpposingPiece(board, board.availableEnPassant.captureablePiece, color)
+    );
   }
 }
 
