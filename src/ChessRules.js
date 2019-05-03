@@ -268,6 +268,32 @@ class RookRules {
   }
 }
 
+class BishopRules {
+  static figure = "♝";
+
+  static validMoves(board, square) {
+    const piece = board.pieces[square];
+    let validMoves = [];
+    for (const direction of [[1, 1], [-1, 1], [1, -1], [-1, -1]]) {
+      validMoves = validMoves.concat(projectedMove(board, square, direction, piece.color));
+    }
+    return validMoves;
+  }
+
+  static movePiece(board, square, newSquare) {
+    const pieces = {...board.pieces};
+    const piece = board.pieces[square];
+
+    pieces[newSquare] = piece;
+    delete pieces[square];
+
+    return {
+      ...board,
+      pieces: pieces,
+    };
+  }
+}
+
 function initialBoardState() {
   return {
     pieces: {
@@ -293,6 +319,11 @@ function initialBoardState() {
       "h1": {pieceType: ROOK, color: WHITE},
       "a8": {pieceType: ROOK, color: BLACK},
       "h8": {pieceType: ROOK, color: BLACK},
+      "c1": {pieceType: BISHOP, color: WHITE},
+      "f1": {pieceType: BISHOP, color: WHITE},
+      "c8": {pieceType: BISHOP, color: BLACK},
+      "f8": {pieceType: BISHOP, color: BLACK},
+
     },
     activeSide: WHITE,
     availableEnPassant: {
@@ -319,6 +350,7 @@ const rules = {
     [PAWN]: PawnRules,
     [KING]: KingRules,
     [ROOK]: RookRules,
+    [BISHOP]: BishopRules,
   },
   selectors: [PawnPromotionSelector],
 }
