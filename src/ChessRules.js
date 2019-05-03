@@ -234,6 +234,35 @@ class KingRules {
   }
 }
 
+class KnightRules {
+  static figure = "♞";
+
+  static validMoves(board, square) {
+    const piece = board.pieces[square];
+    let validMoves = [];
+    for (const [dRank, dFile] of [[-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1], [-2, -1], [-2, 1]]) {
+      let newSquare = new Position(square).offsetFile(dFile).offsetRank(dRank).toString();
+      if (!hasFriendlyPiece(board, newSquare, piece.color)) {
+        validMoves.push(newSquare);
+      }
+    }
+    return validMoves;
+  }
+
+  static movePiece(board, square, newSquare) {
+    const pieces = {...board.pieces};
+    const piece = board.pieces[square];
+
+    pieces[newSquare] = piece;
+    delete pieces[square];
+
+    return {
+      ...board,
+      pieces: pieces,
+    };
+  }
+}
+
 class ProjectingPieceMoves {
   static directions = [];
   static validMoves(board, square) {
@@ -283,35 +312,6 @@ class BishopRules extends ProjectingPieceMoves {
 class QueenRules extends ProjectingPieceMoves {
   static figure = "♛";
   static directions = [[0, 1], [1, 0], [0, -1], [-1, 0], [1, 1], [-1, 1], [1, -1], [-1, -1]];
-}
-
-class KnightRules {
-  static figure = "♞";
-
-  static validMoves(board, square) {
-    const piece = board.pieces[square];
-    let validMoves = [];
-    for (const [dRank, dFile] of [[-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1], [-2, -1], [-2, 1]]) {
-      let newSquare = new Position(square).offsetFile(dFile).offsetRank(dRank).toString();
-      if (!hasFriendlyPiece(board, newSquare, piece.color)) {
-        validMoves.push(newSquare);
-      }
-    }
-    return validMoves;
-  }
-
-  static movePiece(board, square, newSquare) {
-    const pieces = {...board.pieces};
-    const piece = board.pieces[square];
-
-    pieces[newSquare] = piece;
-    delete pieces[square];
-
-    return {
-      ...board,
-      pieces: pieces,
-    };
-  }
 }
 
 function initialBoardState() {
