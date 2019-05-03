@@ -4,6 +4,7 @@ const WHITE = "react-chess-color-white";
 const BLACK = "react-chess-color-black";
 const WHITE_PROMOTE = "react-chess-color-white-promote";
 const BLACK_PROMOTE = "react-chess-color-black-promote";
+const NOCOLOR = "";
 
 const PAWN = Symbol("pawn");
 const ROOK = Symbol("rook");
@@ -12,6 +13,14 @@ const BISHOP = Symbol("bishop");
 const QUEEN = Symbol("queen");
 const KING = Symbol("king");
 
+function squareColor(board, square) {
+  const piece = board.pieces[square];
+  return piece ? piece.color : NOCOLOR;
+}
+
+function isEmptySquare(board, square) {
+  return squareColor(board, square) === NOCOLOR;
+}
 
 function turnOrder(board) {
   const side = board.activeSide;
@@ -35,18 +44,20 @@ class PawnRules {
     const side = piece.color;
 
     const direction = side === WHITE ? 1 : -1;
-    const validMoves = [new Position(square).offsetRank(direction).toString()];
-    /*
+    const validMoves = [];
+
+    const newSquare = new Position(square).offsetRank(direction).toString();
     if (isEmptySquare(board, newSquare)) {
       validMoves.push(newSquare);
-      if ([2, 7].includes(new Position(square).file)) {
-        const newSquare = new Position(square).offsetFile(0).offsetRank(direction*2).toString();
+
+      if ([2, 7].includes(new Position(square).rank)) {
+        const newSquare = new Position(square).offsetRank(direction*2).toString();
         if (isEmptySquare(board, newSquare)) {
           validMoves.push(newSquare);
         }
       }
     }
-
+    /*
     for (const drank of [-1, 1]) {
       const newSquare = new Position(square).offsetFile(drank).offsetRank(direction).toString();
       if (hasOpposingPiece(board, newSquare, piece.props.color)) {
@@ -57,9 +68,6 @@ class PawnRules {
       }
     }*/
     return validMoves;
-  }
-
-
   }
 
   static movePiece(board, square, newSquare) {
