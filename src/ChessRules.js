@@ -157,6 +157,29 @@ class KingRules {
       }
     }
 
+    const _square = new Position(square);
+    console.log(board.canLongCastle);
+    if (board.canLongCastle[piece.color]) {
+      console.log("long castling");
+      const emptySquares = [-1, -2, -3].map(
+        (offset) => _square.offsetFile(offset).toString()
+      );
+
+      if (emptySquares.every((square) => isEmptySquare(board, square))) {
+        validMoves.push(emptySquares[1]);
+      }
+    }
+
+    if (board.canLongCastle[piece.color]) {
+      const emptySquares = [1, 2].map(
+        (offset) => _square.offsetFile(offset).toString()
+      );
+
+      if (emptySquares.every((square) => isEmptySquare(board, square))) {
+        validMoves.push(emptySquares[1]);
+      }
+    }
+
     return validMoves;
   }
 
@@ -165,14 +188,33 @@ class KingRules {
     const piece = board.pieces[square];
     const _square = new Position(square);
 
+    board.canShortCastle[piece.color] = false;
+    board.canLongCastle[piece.color] = false;
+
+    const dest = new Position(newSquare);
+
+    if (board.canLongCastle[piece.color] && dest.file === 'c') {
+      const rookSource = dest.setFile('a');
+      const rookDest = dest.setFile('d');
+      pieces[rookDest] = pieces[rookSource];
+      delete pieces[rookSource];
+    }
+
+    if (board.canShortCastle[piece.color] && dest.file === 'g') {
+      const rookSource = dest.setFile('h');
+      const rookDest = dest.setFile('f');
+      pieces[rookDest] = pieces[rookSource];
+      delete pieces[rookSource];
+    }
+
     pieces[newSquare] = piece;
     delete pieces[square];
 
     return {
       ...board,
-      pieces: pieces};
+      pieces: pieces,
+    };
   }
-
 }
 
 function initialBoardState() {
@@ -186,14 +228,22 @@ function initialBoardState() {
       "b7": {pieceType: PAWN, color: BLACK},
       "c7": {pieceType: PAWN, color: BLACK},
       "b5": {pieceType: PAWN, color: WHITE},
-      "h1": {pieceType: KING, color: WHITE},
-      "h8": {pieceType: KING, color: BLACK},
+      "e1": {pieceType: KING, color: WHITE},
+      "e8": {pieceType: KING, color: BLACK},
     },
     activeSide: WHITE,
     availableEnPassant: {
       captureMove: null,
       captureablePiece: null,
-    }
+    },
+    canLongCastle: {
+      [WHITE]: true,
+      [BLACK]: true,
+    },
+    canShortCastle: {
+      [WHITE]: true,
+      [BLACK]: true,
+    },
   }
 }
 
