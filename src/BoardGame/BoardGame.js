@@ -1,62 +1,11 @@
 import React, { Component } from 'react';
 
-import {rankRange, fileRange, Position} from "../BoardGameUtils/Position"
+import {Board} from "./Board";
+import {PieceSelector} from "./PieceSelector";
 
 import './BoardGame.css';
 
-class Board extends Component {
-  // props: shape, pieces
-  render() {
-    const ranks = rankRange(this.props.shape.ranks);
-    return (
-      <table className="react-boardgame__board">
-        <tbody>
-          {ranks.map(rank => this._renderRank(rank))}
-        </tbody>
-      </table>
-    );
-  }
-
-  _renderRank(rank) {
-    const files = fileRange(this.props.shape.files);
-    return (
-      <tr key={rank}>
-        {files.map(file => this._renderSquare(file, rank))}
-      </tr>
-    )
-  }
-
-  _renderSquare(file, rank) {
-    const square = new Position("a1").setFile(file).setRank(rank);
-    const piece = this.props.pieces[square];
-    const figure = piece ? piece.figure : null;
-    const color = piece ? piece.color : null;
-    const isHighlighted = this.props.highlightedSquares.includes(square.toString());
-    return <Square square={square.toString()} key={square.toString()} figure={figure} color={color} isHighlighted={isHighlighted} onClick={this.props.onSquareClick} />
-  }
-}
-
-class Piece extends Component {
-  render() {
-    return (
-      <div className={"react-boardgame__piece " + this.props.color}>
-        {this.props.figure}
-      </div>
-    )
-  }
-}
-
-class Square extends Component {
-  render() {
-    const square = this.props.square;
-    const isHighlighted = this.props.isHighlighted ? "react-boardgame__square--highlighted" : "";
-    return (
-      <td className={"react-boardgame__square " + isHighlighted} title={square} key={square} onClick={(_) => this.props.onClick(square)}>
-        <Piece color={this.props.color} figure={this.props.figure} />
-      </td>
-    )
-  }
-}
+export {BoardGame};
 
 function mapValues(object, fn) {
   return Object.assign(
@@ -64,31 +13,6 @@ function mapValues(object, fn) {
       k => ({[k]: fn(object[k])})
     )
   );
-}
-
-class PieceSelector extends Component {
-  _renderOption(option, index) {
-    return (
-      <div onClick={(e) => this.props.onOptionClick(option)} key={index}>
-        <Piece color={option.color} figure={option.figure} />
-      </div>
-    )
-  }
-
-  render() {
-    const e = window.event;
-    const left = e.clientX + "px";
-    const top = e.clientY + "px";
-    const style = {position: "absolute", top: top, left: left};
-
-    const options = this.props.options.map(this._renderOption.bind(this));
-
-    return (
-      <div className="react-boardgame__piece-selector" style={style}>
-        {options}
-      </div>
-    )
-  }
 }
 
 class BoardGame extends Component {
@@ -175,5 +99,3 @@ class BoardGame extends Component {
     )
   }
 }
-
-export {BoardGame};
