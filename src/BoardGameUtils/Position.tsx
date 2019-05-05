@@ -10,23 +10,30 @@ function fileRange(count: number): Array<string> {
   return Array.from({length: count}, (_, i) => String.fromCharCode("a".charCodeAt(0) + i));
 }
 
-class Position {
-  file: string;
-  rank: number;
-  constructor(fromString: string) {
-    this.file = this._fileFromString(fromString);
-    this.rank = this._rankFromString(fromString);
+interface PositionInterface {
+  readonly file: string;
+  readonly rank: number;
+}
+
+class Position implements PositionInterface {
+  readonly file: string;
+  readonly rank: number;
+  constructor(from: string | PositionInterface) {
+    if (typeof(from) === 'string') {
+      this.file = this._fileFromString(from);
+      this.rank = this._rankFromString(from);
+    } else {
+      this.file = from.file;
+      this.rank = from.rank;
+    }
   }
   copy(): Position {
-    const p = new Position(this.toString());
-    p.file = this.file;
-    p.rank = this.rank;
-    return p;
+    return new Position(this);
   }
-  _fileFromString(fromString: string): string {
+  private _fileFromString(fromString: string): string {
     return fromString[0];
   }
-  _rankFromString(fromString: string): number {
+  private _rankFromString(fromString: string): number {
     return Number(fromString[1]);
   }
   offsetRank(deltaRank: number): Position {
@@ -38,14 +45,10 @@ class Position {
   }
 
   setFile(newFile: string): Position {
-    var p = this.copy();
-    p.file = newFile;
-    return p;
+    return new Position({rank: this.rank, file: newFile});
   }
   setRank(newRank: number): Position {
-    var p = this.copy();
-    p.rank = newRank;
-    return p;
+    return new Position({rank: newRank, file: this.file});
   }
   toString(): string {
     return this.file.toString() + this.rank;
