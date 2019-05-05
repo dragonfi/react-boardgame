@@ -3,8 +3,6 @@ import {BoardState, PieceState, BoardGameRules} from '../BoardGame/BoardGame';
 
 const WHITE = "react-chess-color-white";
 const BLACK = "react-chess-color-black";
-const WHITE_PROMOTE = "react-chess-color-white-promote";
-const BLACK_PROMOTE = "react-chess-color-black-promote";
 const NOCOLOR = "";
 
 const PAWN = "pawn";
@@ -68,17 +66,6 @@ function projectedMove(board: BoardState, square: string, direction: Array<numbe
     }
   }
   return moves;
-}
-
-function turnOrder(board: ChessBoardState): string {
-  switch (board.activeSide) {
-    case WHITE:
-      return board.promotablePawn ? WHITE_PROMOTE : BLACK;
-    case BLACK:
-      return board.promotablePawn ? BLACK_PROMOTE : WHITE;
-    default:
-      return WHITE;
-  }
 }
 
 class PawnPromotionSelector {
