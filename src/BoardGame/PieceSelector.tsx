@@ -4,7 +4,7 @@ import {Piece, PieceProps} from './Piece'
 export {PieceSelector};
 
 interface PieceSelectorProps {
-  onOptionClick(option: PieceProps): null;
+  onOptionClick(option: PieceProps): void;
   options: Array<PieceProps>;
 }
 

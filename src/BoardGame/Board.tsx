@@ -8,7 +8,7 @@ import './BoardGame.css';
 
 export {Board};
 
-interface BoardShape {
+export interface BoardShape {
   ranks: number;
   files: number;
 }

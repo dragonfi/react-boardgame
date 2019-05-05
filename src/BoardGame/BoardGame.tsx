@@ -1,22 +1,69 @@
 import React, { Component } from 'react';
 
-import {Board} from "./Board";
+import {Board, BoardShape} from "./Board";
 import {PieceSelector} from "./PieceSelector";
+import {PieceProps} from "./Piece";
 
 import './BoardGame.css';
 
 export {BoardGame};
 
-function mapValues(object, fn) {
+interface ObjectMap<T> {
+  [key: string]: T;
+}
+
+function mapValues<T1, T2>(object: ObjectMap<T1>, fn: (item: T1) => T2): ObjectMap<T2> {
   return Object.assign(
     {}, ...Object.keys(object).map(
-      k => ({[k]: fn(object[k])})
+      k => ({[k]: fn(object[k] as any)})
     )
   );
 }
 
-class BoardGame extends Component {
-  constructor(props) {
+interface PieceState {
+  pieceType: string;
+  color: string;
+}
+
+export interface BoardState {
+  pieces: {
+    [square: string]: PieceState;
+  }
+}
+
+interface PieceRules {
+  figure: string;
+  validMoves(board: BoardState, square: string): Array<string>;
+  movePiece(board: BoardState, square: string, newSquare: String): BoardState;
+}
+
+export interface BoardGameRules {
+  board: BoardShape;
+  initialBoardState(): BoardState;
+  pieces: {
+    [piece: string]: PieceRules;
+  };
+  selectors: Array<PieceSelectorRules>;
+}
+
+interface BoardGameProps {
+  rules: BoardGameRules;
+}
+
+interface BoardGameState {
+  board: BoardState;
+  highlightedPiece: string;
+  highlightedMoves: Array<string>;
+}
+
+interface PieceSelectorRules {
+  condition(board: BoardState): boolean;
+  options(board: BoardState): Array<PieceState>;
+  handleResult(board: BoardState, result: PieceProps): BoardState;
+}
+
+class BoardGame extends Component<BoardGameProps, BoardGameState> {
+  constructor(props: BoardGameProps) {
     const rules = props.rules;
     super(props);
     this.state = {
@@ -25,14 +72,14 @@ class BoardGame extends Component {
       highlightedMoves: [],
     };
   }
-  _pieceRepresentation(piece) {
+  _pieceRepresentation(piece: PieceState): PieceProps {
     return {
       ...piece,
       figure: this.props.rules.pieces[piece.pieceType].figure,
     }
   }
 
-  _highlightMoves(square) {
+  _highlightMoves(square: string): void {
     const piece = this.state.board.pieces[square];
     if (!piece) {
       this.setState({highlightedMoves: [], highlightedPiece: ''});
@@ -44,7 +91,7 @@ class BoardGame extends Component {
     });
   }
 
-  _movePiece(newSquare) {
+  _movePiece(newSquare: string) {
     const square = this.state.highlightedPiece;
     const piece = this.state.board.pieces[square];
     const newBoard = this.props.rules.pieces[piece.pieceType].movePiece(this.state.board, square, newSquare);
@@ -55,7 +102,7 @@ class BoardGame extends Component {
     });
   }
 
-  _onSquareClick(square) {
+  _onSquareClick(square: string) {
     if (this.state.highlightedMoves.includes(square)) {
       this._movePiece(square);
     } else {
@@ -63,7 +110,7 @@ class BoardGame extends Component {
     }
   }
 
-  _onOptionClick(selector, result) {
+  _onOptionClick(selector: PieceSelectorRules, result: PieceProps) {
     this.setState({
       board: selector.handleResult(this.state.board, result),
     });
@@ -73,7 +120,7 @@ class BoardGame extends Component {
     return this.props.rules.selectors.find((selector) => selector.condition(this.state.board));
   }
 
-  _addFigureToSelectorOption(option) {
+  _addFigureToSelectorOption(option: PieceState): PieceProps {
     return {...option, figure: this.props.rules.pieces[option.pieceType].figure};
   }
 
@@ -82,14 +129,14 @@ class BoardGame extends Component {
     if (!selector) {
       return null;
     }
-    const options = selector.options(this.state.board).map(this._addFigureToSelectorOption.bind(this));
+    const options: Array<PieceProps> = selector.options(this.state.board).map(this._addFigureToSelectorOption.bind(this));
     return <PieceSelector options={options} onOptionClick={this._onOptionClick.bind(this, selector)} />
   }
 
   render() {
     const boardRules = this.props.rules.board;
     const pieces = this.state.board.pieces;
-    const pieceReprs = mapValues(pieces, (v) => this._pieceRepresentation(v));
+    const pieceReprs: ObjectMap<PieceProps> = mapValues(pieces, (v) => this._pieceRepresentation(v));
     const highlightedSquares = [...this.state.highlightedMoves, this.state.highlightedPiece];
     return (
       <div className="react-boardgame">
