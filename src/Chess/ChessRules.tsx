@@ -88,7 +88,10 @@ class PawnPromotionSelector {
   static options(board: ChessBoardState): Array<PieceState> {
     const color = board.promotablePawn ? board.pieces[board.promotablePawn].color: null;
     return color ? [
-      {pieceType: KING.toString(), color: color},
+      {pieceType: QUEEN, color: color},
+      {pieceType: ROOK, color: color},
+      {pieceType: KNIGHT, color: color},
+      {pieceType: BISHOP, color: color},
     ] : [];
   }
   static handleResult(board: ChessBoardState, result: PieceState): ChessBoardState {
