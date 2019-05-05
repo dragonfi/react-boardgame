@@ -1,6 +1,6 @@
 import {rankRange, fileRange, Position} from './Position';
 
-it('poisition can be created', () => {
+it('position can be created', () => {
   const p = new Position('a1');
   expect(p.rank).toBe(1);
   expect(p.file).toBe('a');
