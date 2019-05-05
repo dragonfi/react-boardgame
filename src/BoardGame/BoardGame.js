@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import {rankRange, fileRange, Position} from "../BoardGameUtils/Position"
 
- import './BoardGame.css';
+import './BoardGame.css';
 
 class Board extends Component {
   // props: shape, pieces
