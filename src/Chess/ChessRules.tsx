@@ -1,4 +1,5 @@
-import {Position} from '../BoardGameUtils/Position'
+import {Position} from '../BoardGameUtils/Position';
+import {BoardState, PieceState, PieceSelectorRules, PieceRules} from '../BoardGame/BoardGame';
 
 const WHITE = "react-chess-color-white";
 const BLACK = "react-chess-color-black";
@@ -13,7 +14,21 @@ const BISHOP = Symbol("bishop");
 const QUEEN = Symbol("queen");
 const KING = Symbol("king");
 
-function opposingColor(color) {
+interface ObjectMap<T> {
+  [key: string]: T;
+}
+
+interface ChessBoardState extends BoardState {
+  promotablePawn: string | null;
+  availableEnPassant: {
+    captureMove: string;
+    captureablePiece: string;
+  } | null;
+  canLongCastle: ObjectMap<boolean>;
+  canShortCastle: ObjectMap<boolean>;
+}
+
+function opposingColor(color: string): string {
   switch (color) {
     case WHITE: return BLACK;
     case BLACK: return WHITE;
@@ -21,24 +36,24 @@ function opposingColor(color) {
   }
 }
 
-function squareColor(board, square) {
+function squareColor(board: BoardState, square: string): string {
   const piece = board.pieces[square];
   return piece ? piece.color : NOCOLOR;
 }
 
-function hasOpposingPiece(board, square, color) {
+function hasOpposingPiece(board: BoardState, square: string, color: string): boolean {
   return squareColor(board, square) === opposingColor(color);
 }
 
-function hasFriendlyPiece(board, square, color) {
+function hasFriendlyPiece(board: BoardState, square: string, color: string): boolean {
   return squareColor(board, square) === color;
 }
 
-function isEmptySquare(board, square) {
+function isEmptySquare(board: BoardState, square: string): boolean {
   return squareColor(board, square) === NOCOLOR;
 }
 
-function projectedMove(board, square, direction, color) {
+function projectedMove(board: BoardState, square: string, direction: Array<number>, color: string): Array<string> {
   let moves = [];
   for(const i of [1, 2, 3, 4, 5, 6, 7]) {
     const dfile = direction[0] * i;
@@ -55,7 +70,7 @@ function projectedMove(board, square, direction, color) {
   return moves;
 }
 
-function turnOrder(board) {
+function turnOrder(board: ChessBoardState): string {
   switch (board.activeSide) {
     case WHITE:
       return board.promotablePawn ? WHITE_PROMOTE : BLACK;
@@ -67,17 +82,17 @@ function turnOrder(board) {
 }
 
 class PawnPromotionSelector {
-  static condition(board) {
+  static condition(board: ChessBoardState): boolean {
     return !!board.promotablePawn;
   }
-  static options(board) {
-    const color = board.pieces[board.promotablePawn].color;
-    return [
-      {pieceType: KING, color: color},
-    ];
+  static options(board: ChessBoardState): Array<PieceState> {
+    const color = board.promotablePawn ? board.pieces[board.promotablePawn].color: null;
+    return color ? [
+      {pieceType: KING.toString(), color: color},
+    ] : [];
   }
-  static handleResult(board, result) {
-    const pieces = {...board.pieces, [board.promotablePawn]: result};
+  static handleResult(board: ChessBoardState, result: PieceState): ChessBoardState {
+    const pieces = board.promotablePawn ? {...board.pieces, [board.promotablePawn]: result}: {...board.pieces};
     return {...board, pieces: pieces, promotablePawn: null};
   }
 }
@@ -85,7 +100,7 @@ class PawnPromotionSelector {
 class PawnRules {
   static figure = "♟";
 
-  static validMoves(board, square) {
+  static validMoves(board: ChessBoardState, square: string): Array<string> {
     const piece = board.pieces[square];
     const side = piece.color;
 
@@ -117,7 +132,7 @@ class PawnRules {
     return validMoves;
   }
 
-  static movePiece(board, square, newSquare) {
+  static movePiece(board: ChessBoardState, square: string, newSquare: string): ChessBoardState {
     const pieces = {...board.pieces};
     const piece = board.pieces[square];
     const direction = piece.color === WHITE ? 1 : -1;
@@ -125,10 +140,10 @@ class PawnRules {
     const  _newSquare = new Position(newSquare);
 
     const isDoubleMove = ([2, 7].includes(_square.rank) && [4, 5].includes(_newSquare.rank));
-    const availableEnPassant = {
-      captureMove: isDoubleMove ? _square.offsetRank(direction).toString() : null,
-      captureablePiece: isDoubleMove ? _newSquare.toString(): null,
-    }
+    const availableEnPassant = isDoubleMove ? {
+      captureMove: _square.offsetRank(direction).toString(),
+      captureablePiece: _newSquare.toString(),
+    } : null;
 
     pieces[newSquare] = piece;
     delete pieces[square];
@@ -146,12 +161,12 @@ class PawnRules {
       pieces: pieces};
   }
 
-  static _isLastRow(square, color) {
+  static _isLastRow(square: Position, color: string): boolean {
     return (color === WHITE && square.rank === 8) || (color === BLACK && square.rank === 1);
   }
 
-  static _isValidEnPassant(board, square, color) {
-    return (
+  static _isValidEnPassant(board: ChessBoardState, square: string, color: string): boolean {
+    return !!(
       board.availableEnPassant &&
       square === board.availableEnPassant.captureMove &&
       hasOpposingPiece(board, board.availableEnPassant.captureablePiece, color)
@@ -161,7 +176,7 @@ class PawnRules {
 
 class KingRules {
   static figure = "♚";
-  static validMoves(board, square) {
+  static validMoves(board: ChessBoardState, square: string): Array<string> {
     const piece = board.pieces[square];
 
     const validMoves = [];
@@ -196,7 +211,7 @@ class KingRules {
     return validMoves;
   }
 
-  static movePiece(board, square, newSquare) {
+  static movePiece(board: ChessBoardState, square: string, newSquare: string): ChessBoardState {
     const pieces = {...board.pieces};
     const piece = board.pieces[square];
     const dest = new Position(newSquare);
@@ -204,15 +219,15 @@ class KingRules {
     if (board.canLongCastle[piece.color] && dest.file === 'c') {
       const rookSource = dest.setFile('a');
       const rookDest = dest.setFile('d');
-      pieces[rookDest] = pieces[rookSource];
-      delete pieces[rookSource];
+      pieces[rookDest.toString()] = pieces[rookSource.toString()];
+      delete pieces[rookSource.toString()];
     }
 
     if (board.canShortCastle[piece.color] && dest.file === 'g') {
       const rookSource = dest.setFile('h');
       const rookDest = dest.setFile('f');
-      pieces[rookDest] = pieces[rookSource];
-      delete pieces[rookSource];
+      pieces[rookDest.toString()] = pieces[rookSource.toString()];
+      delete pieces[rookSource.toString()];
     }
 
     pieces[newSquare] = piece;
@@ -231,7 +246,7 @@ class KingRules {
 class KnightRules {
   static figure = "♞";
 
-  static validMoves(board, square) {
+  static validMoves(board: ChessBoardState, square: string): Array<string> {
     const piece = board.pieces[square];
     let validMoves = [];
     for (const [dRank, dFile] of [[-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1], [-2, -1], [-2, 1]]) {
@@ -243,7 +258,7 @@ class KnightRules {
     return validMoves;
   }
 
-  static movePiece(board, square, newSquare) {
+  static movePiece(board: ChessBoardState, square: string, newSquare: string): ChessBoardState {
     const pieces = {...board.pieces};
     const piece = board.pieces[square];
 
@@ -258,17 +273,17 @@ class KnightRules {
 }
 
 class ProjectingPieceMoves {
-  static directions = [];
-  static validMoves(board, square) {
+  static directions: Array<Array<number>> = [];
+  static validMoves(board: ChessBoardState, square: string): Array<string> {
     const piece = board.pieces[square];
-    let validMoves = [];
+    let validMoves: Array<string> = [];
     for (const direction of this.directions) {
       validMoves = validMoves.concat(projectedMove(board, square, direction, piece.color));
     }
     return validMoves;
   }
 
-  static movePiece(board, square, newSquare) {
+  static movePiece(board: ChessBoardState, square: string, newSquare: string): ChessBoardState {
     const pieces = {...board.pieces};
     const piece = board.pieces[square];
 
@@ -283,7 +298,7 @@ class RookRules extends ProjectingPieceMoves {
   static figure = "♜";
   static directions = [[0, 1], [1, 0], [0, -1], [-1, 0]];
 
-  static movePiece(board, square, newSquare) {
+  static movePiece(board: ChessBoardState, square: string, newSquare: string): ChessBoardState {
     const newBoard = super.movePiece(board, square, newSquare);
     const piece = board.pieces[square];
     const _square = new Position(square);
