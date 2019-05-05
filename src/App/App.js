@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import {BoardGame} from './BoardGame.js';
-import {rules as chessRules} from './ChessRules';
+import {BoardGame} from '../BoardGame/BoardGame';
+import {rules as chessRules} from '../Chess/ChessRules';
 
 class App extends Component {
   render() {
