@@ -3,7 +3,15 @@ import {Piece} from './Piece';
 
 export {Square};
 
-class Square extends Component {
+interface SquareProps {
+  square: string;
+  isHighlighted: boolean;
+  onClick(square: string): null;
+  color: string;
+  figure: string;
+}
+
+class Square extends Component<SquareProps> {
   render() {
     const square = this.props.square;
     const isHighlighted = this.props.isHighlighted ? "react-boardgame__square--highlighted" : "";
