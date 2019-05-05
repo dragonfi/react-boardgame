@@ -1,23 +1,12 @@
 import React, { Component } from 'react';
 
+import {ObjectMap, mapValues} from '../Utils/ObjectMap';
 import {Board, BoardShape} from "./Board";
 import {PieceSelector, PieceSelectorOption} from "./PieceSelector";
 import {PieceProps} from "./Piece";
 import './BoardGame.css';
 
 export {BoardGame};
-
-interface ObjectMap<T> {
-  [key: string]: T;
-}
-
-function mapValues<T1, T2>(object: ObjectMap<T1>, fn: (item: T1) => T2): ObjectMap<T2> {
-  return Object.assign(
-    {}, ...Object.keys(object).map(
-      k => ({[k]: fn(object[k] as any)})
-    )
-  );
-}
 
 export interface PieceState {
   pieceType: string;

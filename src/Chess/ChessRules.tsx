@@ -1,5 +1,6 @@
 import {Position} from '../BoardGameUtils/Position';
 import {BoardState, PieceState, BoardGameRules} from '../BoardGame/BoardGame';
+import {ObjectMap}from '../Utils/ObjectMap';
 
 const WHITE = "react-chess-color-white";
 const BLACK = "react-chess-color-black";
@@ -12,9 +13,6 @@ const BISHOP = "bishop";
 const QUEEN = "queen";
 const KING = "king";
 
-interface ObjectMap<T> {
-  [key: string]: T;
-}
 
 interface ChessBoardState extends BoardState {
   promotablePawn: string | null;
