@@ -1,5 +1,5 @@
 import {Position} from '../BoardGameUtils/Position';
-import {BoardState, PieceState, PieceSelectorRules, PieceRules} from '../BoardGame/BoardGame';
+import {BoardState, PieceState, BoardGameRules} from '../BoardGame/BoardGame';
 
 const WHITE = "react-chess-color-white";
 const BLACK = "react-chess-color-black";
@@ -7,12 +7,12 @@ const WHITE_PROMOTE = "react-chess-color-white-promote";
 const BLACK_PROMOTE = "react-chess-color-black-promote";
 const NOCOLOR = "";
 
-const PAWN = Symbol("pawn");
-const ROOK = Symbol("rook");
-const KNIGHT = Symbol("knight");
-const BISHOP = Symbol("bishop");
-const QUEEN = Symbol("queen");
-const KING = Symbol("king");
+const PAWN = "pawn";
+const ROOK = "rook";
+const KNIGHT = "knight";
+const BISHOP = "bishop";
+const QUEEN = "queen";
+const KING = "king";
 
 interface ObjectMap<T> {
   [key: string]: T;
@@ -323,7 +323,7 @@ class QueenRules extends ProjectingPieceMoves {
   static directions = [[0, 1], [1, 0], [0, -1], [-1, 0], [1, 1], [-1, 1], [1, -1], [-1, -1]];
 }
 
-function initialBoardState() {
+function initialBoardState(): ChessBoardState {
   return {
     pieces: {
       "a2": {pieceType: PAWN, color: WHITE},
@@ -360,10 +360,7 @@ function initialBoardState() {
       "d8": {pieceType: QUEEN, color: BLACK},
     },
     activeSide: WHITE,
-    availableEnPassant: {
-      captureMove: null,
-      captureablePiece: null,
-    },
+    availableEnPassant: null,
     canLongCastle: {
       [WHITE]: true,
       [BLACK]: true,
@@ -372,13 +369,12 @@ function initialBoardState() {
       [WHITE]: true,
       [BLACK]: true,
     },
+    promotablePawn: null,
   }
 }
 
-const rules = {
-  board: {type: "chess", ranks: 8, files: 8},
-  sides: [WHITE, BLACK],
-  turnOrder: turnOrder,
+const rules: BoardGameRules<ChessBoardState> = {
+  board: {ranks: 8, files: 8},
   initialBoardState: initialBoardState,
   pieces: {
     [PAWN]: PawnRules,

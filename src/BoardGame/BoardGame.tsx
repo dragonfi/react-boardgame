@@ -122,6 +122,7 @@ class BoardGame<TRules extends BoardGameRules<TState>, TState extends BoardState
   }
 
   _addFigureToSelectorOption(state: PieceState): PieceSelectorOption {
+    console.log(state, this.props.rules.pieces);
     return {state: {...state}, figure: this.props.rules.pieces[state.pieceType].figure};
   }
 
