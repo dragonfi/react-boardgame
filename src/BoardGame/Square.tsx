@@ -3,19 +3,23 @@ import {Piece, PieceProps} from './Piece';
 
 export {Square};
 
-interface SquareProps extends PieceProps {
+interface SquareProps {
+  piece: PieceProps | null;
   square: string;
   isHighlighted: boolean;
   onClick(square: string): null;
 }
 
 class Square extends Component<SquareProps> {
+  _renderPiece(piece: PieceProps | null) {
+    return piece ? <Piece color={piece.color} figure={piece.figure} /> : null;
+  }
   render() {
     const square = this.props.square;
     const isHighlighted = this.props.isHighlighted ? "react-boardgame__square--highlighted" : "";
     return (
       <td className={"react-boardgame__square " + isHighlighted} title={square} key={square} onClick={(_) => this.props.onClick(square)}>
-        <Piece color={this.props.color} figure={this.props.figure} />
+        {this._renderPiece(this.props.piece)}
       </td>
     )
   }

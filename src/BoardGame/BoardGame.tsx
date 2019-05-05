@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 
 import {Board, BoardShape} from "./Board";
-import {PieceSelector} from "./PieceSelector";
+import {PieceSelector, PieceSelectorOption} from "./PieceSelector";
 import {PieceProps} from "./Piece";
-
 import './BoardGame.css';
 
 export {BoardGame};
@@ -20,7 +19,7 @@ function mapValues<T1, T2>(object: ObjectMap<T1>, fn: (item: T1) => T2): ObjectM
   );
 }
 
-interface PieceState {
+export interface PieceState {
   pieceType: string;
   color: string;
 }
@@ -28,42 +27,44 @@ interface PieceState {
 export interface BoardState {
   pieces: {
     [square: string]: PieceState;
-  }
+  },
+  activeSide: string;
 }
 
-interface PieceRules {
+export interface PieceRules<TBoardState extends BoardState> {
   figure: string;
-  validMoves(board: BoardState, square: string): Array<string>;
-  movePiece(board: BoardState, square: string, newSquare: String): BoardState;
+  validMoves(board: TBoardState, square: string): Array<string>;
+  movePiece(board: TBoardState, square: string, newSquare: String): TBoardState;
 }
 
-export interface BoardGameRules {
+export interface BoardGameRules<TBoardState extends BoardState> {
   board: BoardShape;
-  initialBoardState(): BoardState;
+  initialBoardState(): TBoardState;
   pieces: {
-    [piece: string]: PieceRules;
+    [piece: string]: PieceRules<TBoardState>;
   };
-  selectors: Array<PieceSelectorRules>;
+  selectors: Array<PieceSelectorRules<TBoardState>>;
 }
 
-interface BoardGameProps {
-  rules: BoardGameRules;
+export interface PieceSelectorRules<TBoardState extends BoardState> {
+  condition(board: TBoardState): boolean;
+  options(board: TBoardState): Array<PieceState>;
+  handleResult(board: TBoardState, result: PieceState): TBoardState;
 }
 
-interface BoardGameState {
-  board: BoardState;
+interface BoardGameProps<TBoardState extends BoardState, TRules extends BoardGameRules<TBoardState>> {
+  rules: TRules;
+}
+
+interface BoardGameState<TBoardState extends BoardState> {
+  board: TBoardState;
   highlightedPiece: string;
   highlightedMoves: Array<string>;
 }
 
-interface PieceSelectorRules {
-  condition(board: BoardState): boolean;
-  options(board: BoardState): Array<PieceState>;
-  handleResult(board: BoardState, result: PieceProps): BoardState;
-}
-
-class BoardGame extends Component<BoardGameProps, BoardGameState> {
-  constructor(props: BoardGameProps) {
+class BoardGame<TRules extends BoardGameRules<TState>, TState extends BoardState>
+  extends Component<BoardGameProps<TState, TRules>, BoardGameState<TState>> {
+  constructor(props: BoardGameProps<TState, TRules>) {
     const rules = props.rules;
     super(props);
     this.state = {
@@ -94,7 +95,7 @@ class BoardGame extends Component<BoardGameProps, BoardGameState> {
   _movePiece(newSquare: string) {
     const square = this.state.highlightedPiece;
     const piece = this.state.board.pieces[square];
-    const newBoard = this.props.rules.pieces[piece.pieceType].movePiece(this.state.board, square, newSquare);
+    const newBoard: TState = this.props.rules.pieces[piece.pieceType].movePiece(this.state.board, square, newSquare);
     this.setState({
       board: newBoard,
       highlightedMoves: [],
@@ -110,9 +111,9 @@ class BoardGame extends Component<BoardGameProps, BoardGameState> {
     }
   }
 
-  _onOptionClick(selector: PieceSelectorRules, result: PieceProps) {
+  _onOptionClick(selector: PieceSelectorRules<TState>, result: PieceSelectorOption) {
     this.setState({
-      board: selector.handleResult(this.state.board, result),
+      board: selector.handleResult(this.state.board, result.state),
     });
   }
 
@@ -120,8 +121,8 @@ class BoardGame extends Component<BoardGameProps, BoardGameState> {
     return this.props.rules.selectors.find((selector) => selector.condition(this.state.board));
   }
 
-  _addFigureToSelectorOption(option: PieceState): PieceProps {
-    return {...option, figure: this.props.rules.pieces[option.pieceType].figure};
+  _addFigureToSelectorOption(state: PieceState): PieceSelectorOption {
+    return {state: {...state}, figure: this.props.rules.pieces[state.pieceType].figure};
   }
 
   _renderActiveSelector() {
@@ -129,7 +130,7 @@ class BoardGame extends Component<BoardGameProps, BoardGameState> {
     if (!selector) {
       return null;
     }
-    const options: Array<PieceProps> = selector.options(this.state.board).map(this._addFigureToSelectorOption.bind(this));
+    const options: Array<PieceSelectorOption> = selector.options(this.state.board).map(this._addFigureToSelectorOption.bind(this));
     return <PieceSelector options={options} onOptionClick={this._onOptionClick.bind(this, selector)} />
   }
 

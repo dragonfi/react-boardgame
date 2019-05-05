@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 export {Piece};
 
 export interface PieceProps {
-  color: string | null;
-  figure: string | null;
+  color: string;
+  figure: string;
 }
 
 class Piece extends Component<PieceProps> {
