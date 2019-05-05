@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
-import {Piece} from './Piece';
+import {Piece, PieceProps} from './Piece';
 
 export {Square};
 
-interface SquareProps {
+interface SquareProps extends PieceProps {
   square: string;
   isHighlighted: boolean;
   onClick(square: string): null;
-  color: string;
-  figure: string;
 }
 
 class Square extends Component<SquareProps> {

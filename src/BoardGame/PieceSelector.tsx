@@ -1,20 +1,15 @@
 import React, { Component, CSSProperties } from 'react';
-import {Piece} from './Piece'
+import {Piece, PieceProps} from './Piece'
 
 export {PieceSelector};
 
-interface Option {
-  color: string;
-  figure: string;
-}
-
 interface PieceSelectorProps {
-  onOptionClick(option: Option): null;
-  options: Array<Option>;
+  onOptionClick(option: PieceProps): null;
+  options: Array<PieceProps>;
 }
 
 class PieceSelector extends Component<PieceSelectorProps> {
-  _renderOption(option: Option, index: number) {
+  _renderOption(option: PieceProps, index: number) {
     return (
       <div onClick={(e) => this.props.onOptionClick(option)} key={index}>
         <Piece color={option.color} figure={option.figure} />
