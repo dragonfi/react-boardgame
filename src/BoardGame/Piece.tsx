@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 
 export {Piece};
 
-interface PieceProps {
-  color: string;
-  figure: string;
+export interface PieceProps {
+  color: string | null;
+  figure: string | null;
 }
 
 class Piece extends Component<PieceProps> {
