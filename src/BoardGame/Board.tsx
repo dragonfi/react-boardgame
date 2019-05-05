@@ -2,13 +2,29 @@ import React, { Component } from 'react';
 
 import {rankRange, fileRange, Position} from "../BoardGameUtils/Position";
 import {Square} from "./Square";
+import {PieceProps} from "./Piece"
 
 import './BoardGame.css';
 
 export {Board};
 
-class Board extends Component {
-  // props: shape, pieces
+interface BoardShape {
+  ranks: number;
+  files: number;
+}
+
+interface Pieces {
+  [square: string]: PieceProps;
+}
+
+interface BoardProps {
+  shape: BoardShape;
+  pieces: Pieces;
+  highlightedSquares: Array<string>;
+  onSquareClick(square: string): any;
+}
+
+class Board extends Component<BoardProps> {
   render() {
     const ranks = rankRange(this.props.shape.ranks);
     return (
@@ -20,7 +36,7 @@ class Board extends Component {
     );
   }
 
-  _renderRank(rank) {
+  _renderRank(rank: number) {
     const files = fileRange(this.props.shape.files);
     return (
       <tr key={rank}>
@@ -29,8 +45,8 @@ class Board extends Component {
     )
   }
 
-  _renderSquare(file, rank) {
-    const square = new Position("a1").setFile(file).setRank(rank);
+  _renderSquare(file: string, rank: number) {
+    const square = new Position("a1").setFile(file).setRank(rank).toString();
     const piece = this.props.pieces[square];
     const figure = piece ? piece.figure : null;
     const color = piece ? piece.color : null;
