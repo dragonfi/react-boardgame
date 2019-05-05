@@ -1,3 +1,11 @@
+# Boardgame collection
+
+A boardgame collection written in React with Typescript.
+
+Disclaimer: This project is just a fun way for me to practice my React / Typescript / Javascript skills.
+
+## Instructions
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
