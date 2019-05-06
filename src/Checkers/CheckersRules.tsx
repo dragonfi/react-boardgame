@@ -74,6 +74,13 @@ class ManRules {
         validMoves.push(move);
       }
     }
+    for (const direction of [[-1, 1], [1, 1], [-1, -1], [1, -1]]) {
+      const move = _square.offsetFile(direction[0]).offsetRank(direction[1]).toString();
+      const jump = _square.offsetFile(direction[0]*2).offsetRank(direction[1]*2).toString();
+      if (hasOpposingPiece(board, move, color) && isEmptySquare(board, jump)) {
+        validMoves.push(jump);
+      }
+    }
 
     return validMoves;
   }
@@ -81,10 +88,32 @@ class ManRules {
     const pieces = {...board.pieces};
     const piece = board.pieces[square];
 
+    for (const jumpedSquare of this._jumpedSquares(square, newSquare)) {
+      delete pieces[jumpedSquare];
+    }
+
     pieces[newSquare] = piece;
     delete pieces[square];
 
     return {...board, pieces: pieces};
+  }
+
+  static _jumpedSquares(square: string, newSquare: string): Array<string> {
+    const _square = new Position(square);
+    const _newSquare = new Position(newSquare);
+    const direction = [
+      _newSquare.file > _square.file ? 1 : -1,
+      _newSquare.rank > _square.rank ? 1 : -1,
+    ];
+    const jumpedSquares = [];
+    for (let i = 1; i < 10; i++) {
+      const jumpedSquare = _square.offsetFile(direction[0]*i).offsetRank(direction[1]*i);
+      if (jumpedSquare.toString() === _newSquare.toString()) {
+        break;
+      }
+      jumpedSquares.push(jumpedSquare.toString());
+    }
+    return jumpedSquares;
   }
 }
 
