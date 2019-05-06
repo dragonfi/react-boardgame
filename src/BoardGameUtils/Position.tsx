@@ -34,7 +34,7 @@ class Position implements PositionInterface {
     return fromString[0];
   }
   private _rankFromString(fromString: string): number {
-    return Number(fromString[1]);
+    return Number(fromString.slice(1));
   }
   offsetRank(deltaRank: number): Position {
     return this.copy().setRank(this.rank + deltaRank);

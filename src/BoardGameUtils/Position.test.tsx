@@ -6,6 +6,13 @@ it('position can be created', () => {
   expect(p.file).toBe('a');
 });
 
+it('position with two digits can be created', () => {
+  const p = new Position('k10');
+  expect(p.rank).toBe(10);
+  expect(p.file).toBe('k');
+});
+
+
 it('position arithmetic works', () => {
   const p = new Position('c3');
   expect(p.rank).toBe(3);
@@ -35,6 +42,14 @@ it('rankRange properly returns reverse range for size of 8', () => {
   expect(rankRange(8)).toEqual([8, 7, 6, 5, 4, 3, 2, 1]);
 });
 
+it('rankRange properly returns reverse range for size of 10', () => {
+  expect(rankRange(10)).toEqual([10, 9, 8, 7, 6, 5, 4, 3, 2, 1]);
+});
+
 it('fileRange properly returns letter range for size of 8', () => {
   expect(fileRange(8)).toEqual(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']);
+});
+
+it('fileRange properly returns letter range for size of 10', () => {
+  expect(fileRange(10)).toEqual(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']);
 });
