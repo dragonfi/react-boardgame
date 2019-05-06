@@ -86,10 +86,15 @@ class ManRules {
   }
   static movePiece(board: CheckersBoardState, square: string, newSquare: string): CheckersBoardState {
     const pieces = {...board.pieces};
-    const piece = board.pieces[square];
+    let piece = {...board.pieces[square]};
 
     for (const jumpedSquare of this._jumpedSquares(square, newSquare)) {
       delete pieces[jumpedSquare];
+    }
+
+    const newRank = new Position(newSquare).rank;
+    if ((newRank === 10 && piece.color === WHITE) || (newRank === 1 && piece.color === BLACK)) {
+      piece.pieceType = KING;
     }
 
     pieces[newSquare] = piece;
@@ -117,11 +122,16 @@ class ManRules {
   }
 }
 
+class KingRules extends ManRules {
+  static figure = "⛃";
+}
+
 let rules: BoardGameRules<CheckersBoardState> = {
   board: {ranks: 10, files: 10},
   initialBoardState: initialBoardState,
   pieces: {
     [MAN]: ManRules,
+    [KING]: KingRules,
   },
   selectors: [],
 };
