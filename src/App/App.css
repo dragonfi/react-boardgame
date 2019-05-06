@@ -2,6 +2,11 @@ body {
   background-color: #333;
 }
 
+.react-boardgame__inline-container {
+  display: inline-block;
+  margin: 2rem;
+}
+
 .App {
   text-align: center;
 }
