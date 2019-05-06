@@ -84,6 +84,7 @@ class ManRules {
 
     return validMoves;
   }
+
   static movePiece(board: CheckersBoardState, square: string, newSquare: string): CheckersBoardState {
     const pieces = {...board.pieces};
     let piece = {...board.pieces[square]};
@@ -124,6 +125,33 @@ class ManRules {
 
 class KingRules extends ManRules {
   static figure = "⛃";
+  static validMoves(board: CheckersBoardState, square: string): Array<string> {
+    const _square = new Position(square);
+    const color = board.pieces[square].color;
+    // move directions [[-1, -1], [1, -1], [1, 1], [-1, 1]]
+    let validMoves: Array<string> = [];
+    for (const direction of [[-1, 1], [1, 1], [-1, -1], [1, -1]]) {
+      let alreadyJumped = false;
+      for (let i = 1; i < 10; i++) {
+        const move = _square.offsetFile(direction[0]*i).offsetRank(direction[1]*i).toString();
+        if (hasFriendlyPiece(board, move, color)) {
+          break;
+        }
+        if (hasOpposingPiece(board, move, color)) {
+          if (alreadyJumped) {
+            break;
+          }
+          alreadyJumped = true;
+          continue;
+        }
+        if (isEmptySquare(board, move)) {
+          validMoves.push(move);
+        }
+      }
+    }
+
+    return validMoves;
+  }
 }
 
 let rules: BoardGameRules<CheckersBoardState> = {
