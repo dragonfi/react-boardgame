@@ -1,45 +1,26 @@
-.react-boardgame__square, .react-boardgame__piece-selector {
+.react-boardgame__piece-selector {
   border: 1px solid black;
   border-collapse: collapse;
   font-size: 2rem;
-}
-
-.react-boardgame__piece-selector {
   position: absolute;
   top: 6rem;
   left: 6rem;
   background-color: #dd6666;
 }
 
-td {
+.react-boardgame__square {
+  border: 1px solid black;
+  border-collapse: collapse;
+  font-size: 2rem;
   height: 3rem;
   width: 3rem;
-}
-
-td {
-  background-color: #ffcccc;
-}
-
-tr:nth-child(2n+1) td:nth-child(2n) {
   background-color: #dd6666;
 }
 
-tr:nth-child(2n) td:nth-child(2n+1) {
-  background-color: #dd6666;
-}
-
-tr:nth-child(n) td.react-boardgame__square--highlighted {
-  background-color: #999999;
-}
-
-tr:nth-child(n) td:hover {
-  background-color: #666666;
-}
-
-.react-chess-color-white {
+.react-boardgame__piece--color-white {
   color: white;
 }
 
-.react-chess-color-black {
+.react-boardgame__piece--color-black {
   color: black;
 }

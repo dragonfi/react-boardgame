@@ -2,8 +2,10 @@ import {Position} from '../BoardGameUtils/Position';
 import {BoardState, PieceState, BoardGameRules} from '../BoardGame/BoardGame';
 import {ObjectMap}from '../Utils/ObjectMap';
 
-const WHITE = "react-chess-color-white";
-const BLACK = "react-chess-color-black";
+import '../BoardGame/CheckeredBoard.css';
+
+const WHITE = "react-boardgame__piece--color-white";
+const BLACK = "react-boardgame__piece--color-black";
 const NOCOLOR = "";
 
 const PAWN = "pawn";

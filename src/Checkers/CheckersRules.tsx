@@ -2,10 +2,10 @@ import {BoardState, BoardGameRules, PieceState} from '../BoardGame/BoardGame';
 import {Position} from '../BoardGameUtils/Position';
 import {ObjectMap} from '../Utils/ObjectMap';
 
-import './Checkers.css'
+import '../BoardGame/CheckeredBoard.css';
 
-const WHITE = "react-boardgame--color-white";
-const BLACK = "react-boardgame--color-black";
+const WHITE = "react-boardgame__piece--color-white";
+const BLACK = "react-boardgame__piece--color-black";
 const NOCOLOR = "";
 
 function opposingColor(color: string): string {
