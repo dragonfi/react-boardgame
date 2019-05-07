@@ -82,7 +82,12 @@ class ManRules {
       }
     }
 
-    return validMoves;
+    return (validMoves
+      .map((m) => new Position(m))
+      .filter((p) => p.rank < 11 && p.rank > 0)
+      .filter((p) => p.file > '`' && p.file < 'k')
+      .map((p) => p.toString())
+    );
   }
 
   static movePiece(board: CheckersBoardState, square: string, newSquare: string): CheckersBoardState {
@@ -93,15 +98,18 @@ class ManRules {
       delete pieces[jumpedSquare];
     }
 
-    const newRank = new Position(newSquare).rank;
-    if ((newRank === 10 && piece.color === WHITE) || (newRank === 1 && piece.color === BLACK)) {
-      piece.pieceType = KING;
-    }
-
     pieces[newSquare] = piece;
     delete pieces[square];
 
-    return {...board, pieces: pieces};
+    let newBoard = {...board, pieces: pieces};
+    const newRank = new Position(newSquare).rank;
+    if ((newRank === 10 && piece.color === WHITE) || (newRank === 1 && piece.color === BLACK)) {
+      if (this.validMoves(newBoard, newSquare).length === 0) {
+        newBoard.pieces[newSquare].pieceType = KING;
+      }
+    }
+
+    return newBoard;
   }
 
   static _jumpedSquares(square: string, newSquare: string): Array<string> {
