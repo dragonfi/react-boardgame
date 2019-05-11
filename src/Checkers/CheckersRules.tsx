@@ -163,7 +163,7 @@ class KingRules extends ManRules {
 }
 
 let rules: BoardGameRules<CheckersBoardState> = {
-  board: {ranks: 10, files: 10},
+  board: {ranks: 10, files: 10, style: "checkered"},
   initialBoardState: initialBoardState,
   pieces: {
     [MAN]: ManRules,

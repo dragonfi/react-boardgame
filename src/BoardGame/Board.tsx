@@ -11,6 +11,7 @@ export {Board};
 export interface BoardShape {
   ranks: number;
   files: number;
+  style: string;
 }
 
 interface Pieces {
@@ -28,7 +29,7 @@ class Board extends Component<BoardProps> {
   render() {
     const ranks = rankRange(this.props.shape.ranks);
     return (
-      <table className="react-boardgame__board">
+      <table className={"react-boardgame__board react-boardgame__board--" + this.props.shape.style}>
         <tbody>
           {ranks.map(rank => this._renderRank(rank))}
         </tbody>

@@ -1,15 +1,15 @@
-.react-boardgame__board tr:nth-child(2n) td:nth-child(2n) {
+.react-boardgame__board--checkered tr:nth-child(2n) td:nth-child(2n) {
   background-color: #ffcccc;
 }
 
-.react-boardgame__board tr:nth-child(2n+1) td:nth-child(2n+1) {
+.react-boardgame__board--checkered tr:nth-child(2n+1) td:nth-child(2n+1) {
   background-color: #ffcccc;
 }
 
-.react-boardgame__board tr:nth-child(n) td.react-boardgame__square--highlighted {
+.react-boardgame__board--checkered tr:nth-child(n) td.react-boardgame__square--highlighted {
   background-color: #999999;
 }
 
-.react-boardgame__board tr:nth-child(n) td:hover {
+.react-boardgame__board--checkered tr:nth-child(n) td:hover {
   background-color: #666666;
 }

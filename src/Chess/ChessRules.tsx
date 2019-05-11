@@ -364,7 +364,7 @@ function initialBoardState(): ChessBoardState {
 }
 
 const rules: BoardGameRules<ChessBoardState> = {
-  board: {ranks: 8, files: 8},
+  board: {ranks: 8, files: 8, style: "checkered"},
   initialBoardState: initialBoardState,
   pieces: {
     [PAWN]: PawnRules,
