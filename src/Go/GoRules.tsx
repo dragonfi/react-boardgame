@@ -38,7 +38,7 @@ function initialBoardState(): GoBoardState {
 }
 
 const rules: BoardGameRules<GoBoardState> = {
-  board: {ranks: 19, files: 19},
+  board: {ranks: 19, files: 19, style: "go"},
   pieces: {
       [STONE]: StoneRules,
       [EMPTY]: StoneRules,
