@@ -374,6 +374,7 @@ const rules: BoardGameRules<ChessBoardState> = {
     [KNIGHT]: KnightRules,
     [QUEEN]: QueenRules,
   },
+  emptySquareMove: (board, _) => board,
   selectors: [PawnPromotionSelector],
 }
 

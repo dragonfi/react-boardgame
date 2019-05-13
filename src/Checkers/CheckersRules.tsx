@@ -169,6 +169,7 @@ let rules: BoardGameRules<CheckersBoardState> = {
     [MAN]: ManRules,
     [KING]: KingRules,
   },
+  emptySquareMove: (board, _) => board,
   selectors: [],
 };
 

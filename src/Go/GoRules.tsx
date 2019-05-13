@@ -63,12 +63,18 @@ function initialBoardState(): GoBoardState {
   }
 }
 
+function emptySquareMove(board: GoBoardState, square: string): GoBoardState {
+  console.log("empty square move:", square);
+  return board;
+}
+
 const rules: BoardGameRules<GoBoardState> = {
   board: {ranks: 19, files: 19, style: "go"},
   pieces: {
       [STONE]: StoneRules,
       [EMPTY]: EmptyRules,
   },
+  emptySquareMove: emptySquareMove,
   initialBoardState: initialBoardState,
   selectors: [],
 }

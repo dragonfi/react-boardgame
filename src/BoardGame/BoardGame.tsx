@@ -32,6 +32,7 @@ export interface BoardGameRules<TBoardState extends BoardState> {
   pieces: {
     [piece: string]: PieceRules<TBoardState>;
   };
+  emptySquareMove(board: TBoardState, square: string): TBoardState;
   selectors: Array<PieceSelectorRules<TBoardState>>;
 }
 
@@ -95,9 +96,17 @@ class BoardGame<TRules extends BoardGameRules<TState>, TState extends BoardState
   _onSquareClick(square: string) {
     if (this.state.highlightedMoves.includes(square)) {
       this._movePiece(square);
-    } else {
+    } else if (this.state.board.pieces[square]){
       this._highlightMoves(square);
+    } else {
+      this._emptySquareMove(square);
     }
+  }
+
+  _emptySquareMove(square: string) {
+    this.setState({
+      board: this.props.rules.emptySquareMove(this.state.board, square),
+    })
   }
 
   _onOptionClick(selector: PieceSelectorRules<TState>, result: PieceSelectorOption) {
