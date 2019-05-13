@@ -30,10 +30,50 @@
   background-size: 100% 100%;
 }
 
+.react-boardgame__board--go tr:first-child .react-boardgame__square {
+  background-image: url('./bgSide.svg');
+}
+
+.react-boardgame__board--go tr:last-child .react-boardgame__square {
+  background-image: url('./bgSide.svg');
+  transform: rotate(180deg);
+}
+
+.react-boardgame__board--go tr .react-boardgame__square:first-child {
+  background-image: url('./bgSide.svg');
+  transform: rotate(270deg);
+}
+
+.react-boardgame__board--go tr .react-boardgame__square:last-child {
+  background-image: url('./bgSide.svg');
+  transform: rotate(90deg);
+}
+
+.react-boardgame__board--go tr:first-child .react-boardgame__square:first-child {
+  background-image: url('./bgCorner.svg');
+  transform: rotate(0deg);
+}
+
+.react-boardgame__board--go tr:first-child .react-boardgame__square:last-child {
+  background-image: url('./bgCorner.svg');
+  transform: rotate(90deg);
+}
+
+.react-boardgame__board--go tr:last-child .react-boardgame__square:first-child {
+  background-image: url('./bgCorner.svg');
+  transform: rotate(270deg);
+}
+
+.react-boardgame__board--go tr:last-child .react-boardgame__square:last-child {
+  background-image: url('./bgCorner.svg');
+  transform: rotate(180deg);
+}
+
 .react-boardgame__board--go .react-boardgame__piece img {
   width: 3rem;
   height: 3rem;
-  color: black;
+  color: blac
+
 }
 
 .react-boardgame__board--go .react-boardgame__piece--color-white img {
