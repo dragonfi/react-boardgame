@@ -2,11 +2,14 @@ import {BoardGameRules, BoardState, PieceState} from '../BoardGame/BoardGame'
 import {Position, rankRange, fileRange} from '../BoardGameUtils/Position'
 import {ObjectMap} from '../Utils/ObjectMap';
 
+import React from 'react'
+
 const WHITE = "react-boardgame__piece--color-white";
 const BLACK = "react-boardgame__piece--color-black";
 const NOCOLOR = "";
 
 import './Go.css';
+import stoneSvg from './stone.svg';
 
 function opposingColor(color: string): string {
   switch (color) {
@@ -24,7 +27,7 @@ interface GoBoardState extends BoardState {
 }
 
 class StoneRules {
-  static figure =  "⚫";
+  static figure =  <img src={stoneSvg} alt="⚫" />;
   static validMoves(board: GoBoardState, square: string): Array<string> {
     return [square];
   }

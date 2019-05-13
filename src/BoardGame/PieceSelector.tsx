@@ -1,11 +1,11 @@
-import React, { Component, CSSProperties } from 'react';
+import React, { Component, CSSProperties, ReactElement } from 'react';
 import {Piece} from './Piece'
 
 
 export {PieceSelector};
 
 export interface PieceSelectorOption {
-  figure: string;
+  figure: string | ReactElement;
   state: {
     pieceType: string;
     color: string;

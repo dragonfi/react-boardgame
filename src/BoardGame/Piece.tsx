@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, ReactElement } from 'react';
 
 export {Piece};
 
 export interface PieceProps {
   color: string;
-  figure: string;
+  figure: string | ReactElement;
 }
 
 class Piece extends Component<PieceProps> {

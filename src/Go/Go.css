@@ -29,3 +29,14 @@
   background-image: url('./bg.svg');
   background-size: 100% 100%;
 }
+
+.react-boardgame__board--go .react-boardgame__piece img {
+  width: 3rem;
+  height: 3rem;
+  color: black;
+}
+
+.react-boardgame__board--go .react-boardgame__piece--color-white img {
+  color: white;
+  filter: invert(1);
+}

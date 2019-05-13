@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, ReactElement } from 'react';
 
 import {ObjectMap, mapValues} from '../Utils/ObjectMap';
 import {Board, BoardShape} from "./Board";
@@ -21,7 +21,7 @@ export interface BoardState {
 }
 
 export interface PieceRules<TBoardState extends BoardState> {
-  figure: string;
+  figure: string | ReactElement;
   validMoves(board: TBoardState, square: string): Array<string>;
   movePiece(board: TBoardState, square: string, newSquare: String): TBoardState;
 }
