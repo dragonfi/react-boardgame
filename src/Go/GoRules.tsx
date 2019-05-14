@@ -42,10 +42,13 @@ class StoneRules {
 
   static movePiece(board: GoBoardState, square: string, newSquare: string): GoBoardState {
     let pieces = {...board.pieces};
-    delete pieces[newSquare];
+    const stonesToRemove = this._stonesFromSameGroup(board, newSquare);
+    for (const stone of stonesToRemove) {
+      delete pieces[stone];
+    }
     return {...board, pieces: pieces};
   }
-  
+
   static _stonesFromSameGroup(board: GoBoardState, square: string): Array<string> {
     const origin = new Position(square);
     let stonesFromSameGroup = new Set([origin.toString()]);
