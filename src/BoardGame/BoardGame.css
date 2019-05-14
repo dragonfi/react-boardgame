@@ -17,6 +17,10 @@
   background-color: #dd6666;
 }
 
+.react-boardgame__board .react-boardgame__square--highlighted {
+  background-color: #999999;
+}
+
 .react-boardgame__piece--color-white {
   color: white;
 }
