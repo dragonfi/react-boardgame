@@ -19,6 +19,15 @@ function opposingColor(color: string): string {
   }
 }
 
+function squareColor(board: BoardState, square: string): string {
+  const piece = board.pieces[square];
+  return piece ? piece.color : NOCOLOR;
+}
+
+function hasFriendlyPiece(board: BoardState, square: string, color: string): boolean {
+  return squareColor(board, square) === color;
+}
+
 const STONE = "stone";
 
 interface GoBoardState extends BoardState {
@@ -28,12 +37,69 @@ interface GoBoardState extends BoardState {
 class StoneRules {
   static figure =  <img src={stoneSvg} alt="⚫" />;
   static validMoves(board: GoBoardState, square: string): Array<string> {
-    return [square];
+    return this._stonesFromSameGroup(board, square);
   }
+
   static movePiece(board: GoBoardState, square: string, newSquare: string): GoBoardState {
     let pieces = {...board.pieces};
     delete pieces[newSquare];
     return {...board, pieces: pieces};
+  }
+  
+  static _stonesFromSameGroup(board: GoBoardState, square: string): Array<string> {
+    const origin = new Position(square);
+    let stonesFromSameGroup = new Set([origin.toString()]);
+
+    for(let i = 0; i < 40; i++) {
+      let newStones = this._addNeighbours(board, stonesFromSameGroup);
+      if (this._setsEqual(newStones, stonesFromSameGroup)) {
+        break;
+      }
+      for (const newStone of Array.from(newStones)) {
+        stonesFromSameGroup.add(newStone);
+      }
+    }
+    return Array.from(stonesFromSameGroup);
+  }
+
+  static _setsEqual<T>(first: Set<T>, second: Set<T>): Boolean {
+    for (const item of Array.from(first)) {
+      if (!second.has(item)) {
+        return false;
+      };
+    }
+    for (const item of Array.from(second)) {
+      if (!first.has(item)) {
+        return false;
+      };
+    }
+    return true;
+  }
+
+  static _addNeighbours(board: GoBoardState, stones: Set<string>): Set<string> {
+    let result = new Set(stones);
+    for (const stone of Array.from(stones)) {
+      for (const neighbour of this._friendlyNeighbours(board, stone)) {
+        result.add(neighbour);
+      }
+    }
+    return result;
+  }
+
+  static _friendlyNeighbours(board: GoBoardState, position: string): Array<string> {
+    let results: Array<string> = [];
+    const _position = new Position(position);
+    const stone = board.pieces[position];
+    if (!stone) {
+      return [];
+    }
+    const color = stone.color;
+    for(const candidate of [_position.offsetFile(1), _position.offsetFile(-1), _position.offsetRank(1), _position.offsetRank(-1)]) {
+      if(hasFriendlyPiece(board, candidate.toString(), color)) {
+        results.push(candidate.toString());
+      }
+    }
+    return results;
   }
 }
 
