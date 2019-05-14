@@ -31,7 +31,7 @@ function hasFriendlyPiece(board: BoardState, square: string, color: string): boo
 const STONE = "stone";
 
 interface GoBoardState extends BoardState {
-
+  prisoners: ObjectMap<number>;
 }
 
 class StoneRules {
@@ -42,11 +42,14 @@ class StoneRules {
 
   static movePiece(board: GoBoardState, square: string, newSquare: string): GoBoardState {
     let pieces = {...board.pieces};
+    const color = board.pieces[newSquare].color;
+    let prisoners = {...board.prisoners};
     const stonesToRemove = this._stonesFromSameGroup(board, newSquare);
     for (const stone of stonesToRemove) {
+      prisoners[color] = prisoners[color] ? prisoners[color] + 1 : 0;
       delete pieces[stone];
     }
-    return {...board, pieces: pieces};
+    return {...board, pieces: pieces, prisoners: prisoners};
   }
 
   static _stonesFromSameGroup(board: GoBoardState, square: string): Array<string> {
@@ -110,6 +113,10 @@ function initialBoardState(): GoBoardState {
   return {
     pieces: {},
     activeSide: BLACK,
+    prisoners: {
+      [WHITE]: 0,
+      [BLACK]: 0,
+    }
   }
 }
 
