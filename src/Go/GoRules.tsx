@@ -127,7 +127,7 @@ class PrisonerCounter extends React.Component<{title: string, prisonerCount: num
 class PrisonerCounters extends React.Component<{board: GoBoardState}> {
   render() {
     return (
-      <div className=".go-boardgame__prisoner-counter">
+      <div className="react-boardgame__prisoner-counter--go">
         <PrisonerCounter title="Prisoners of Black:" prisonerCount={this.props.board.prisoners[WHITE]}/>
         <PrisonerCounter title="Prisoners of White:" prisonerCount={this.props.board.prisoners[BLACK]}/>
       </div>

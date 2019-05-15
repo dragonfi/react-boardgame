@@ -14,6 +14,21 @@
   background-color: #dd6666;
 }
 
+.react-boardgame__board--go, .react-boardgame__prisoner-counter--go {
+  background-color: #dd6666;
+  margin: 1rem;
+  float: left;
+}
+
+p {
+  padding: 0;
+  margin: 0;
+}
+
+.react-boardgame__prisoner-counter--go {
+  padding: 1rem;
+}
+
 .react-boardgame__board--go .react-boardgame__piece {
   width: 3rem;
   height: 3rem;
