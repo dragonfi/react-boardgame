@@ -171,6 +171,7 @@ let rules: BoardGameRules<CheckersBoardState> = {
   },
   emptySquareMove: (board, _) => board,
   selectors: [],
+  sideIndicators: [],
 };
 
 // Unicode figures: ⛀⛁⛂⛃

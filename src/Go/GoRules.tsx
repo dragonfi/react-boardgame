@@ -38,9 +38,10 @@ class StoneRules {
     let prisoners = {...board.prisoners};
     const stonesToRemove = this._stonesFromSameGroup(board, newSquare);
     for (const stone of stonesToRemove) {
-      prisoners[color] = prisoners[color] ? prisoners[color] + 1 : 0;
+      prisoners[color] = prisoners[color] !== undefined ? prisoners[color] + 1 : 0;
       delete pieces[stone];
     }
+    console.log(prisoners);
     return {...board, pieces: pieces, prisoners: prisoners};
   }
 
@@ -117,6 +118,23 @@ function emptySquareMove(board: GoBoardState, square: string): GoBoardState {
   return {...board, activeSide: board.activeSide === WHITE ? BLACK : WHITE, pieces: pieces};
 }
 
+class PrisonerCounter extends React.Component<{title: string, prisonerCount: number}> {
+  render() {
+    return <p>{this.props.title} {this.props.prisonerCount}</p>;
+  }
+}
+
+class PrisonerCounters extends React.Component<{board: GoBoardState}> {
+  render() {
+    return (
+      <div className=".go-boardgame__prisoner-counter">
+        <PrisonerCounter title="Prisoners of Black:" prisonerCount={this.props.board.prisoners[WHITE]}/>
+        <PrisonerCounter title="Prisoners of White:" prisonerCount={this.props.board.prisoners[BLACK]}/>
+      </div>
+    )
+  }
+}
+
 const rules: BoardGameRules<GoBoardState> = {
   board: {ranks: 19, files: 19, style: "go"},
   pieces: {
@@ -125,6 +143,7 @@ const rules: BoardGameRules<GoBoardState> = {
   emptySquareMove: emptySquareMove,
   initialBoardState: initialBoardState,
   selectors: [],
+  sideIndicators: [PrisonerCounters],
 }
 
 export {rules}

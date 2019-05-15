@@ -34,6 +34,7 @@ export interface BoardGameRules<TBoardState extends BoardState> {
   };
   emptySquareMove(board: TBoardState, square: string): TBoardState;
   selectors: Array<PieceSelectorRules<TBoardState>>;
+  sideIndicators: Array<typeof Component>;
 }
 
 export interface PieceSelectorRules<TBoardState extends BoardState> {
@@ -142,6 +143,7 @@ class BoardGame<TRules extends BoardGameRules<TState>, TState extends BoardState
       <div className="react-boardgame">
         <Board shape={boardRules} pieces={pieceReprs} highlightedSquares={highlightedSquares} onSquareClick={this._onSquareClick.bind(this)}/>
         {this._renderActiveSelector()}
+        {this.props.rules.sideIndicators.map((component: any) => React.createElement(component, {board: this.state.board}))}
       </div>
     )
   }

@@ -376,6 +376,7 @@ const rules: BoardGameRules<ChessBoardState> = {
   },
   emptySquareMove: (board, _) => board,
   selectors: [PawnPromotionSelector],
+  sideIndicators: [],
 }
 
 // Piece figures: ♔♕♖♗♘♙♚♛♜♝♞♟
