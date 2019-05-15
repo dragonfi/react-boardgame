@@ -13,17 +13,17 @@ class App extends Component {
       <div className="App react-boardgame__main-container">
         <div className="react-boardgame__inline-container">
           <ErrorBoundary errorMessage="An error occured, we misplayed the chess board. Care to play a different game?">
-            <BoardGame rules={goRules}></BoardGame>
+            <BoardGame rules={goRules} />
           </ErrorBoundary>
         </div>
         <div className="react-boardgame__inline-container">
           <ErrorBoundary errorMessage="An error occured, we misplayed the checkers board. Care to play a different game?">
-            <BoardGame rules={checkersRules}></BoardGame>
+            <BoardGame rules={checkersRules} />
           </ErrorBoundary>
         </div>
         <div className="react-boardgame__inline-container">
           <ErrorBoundary errorMessage="An error occured, we misplayed the chess board. Care to play a different game?">
-            <BoardGame rules={chessRules}></BoardGame>
+            <BoardGame rules={chessRules} />
           </ErrorBoundary>
         </div>
       </div>
