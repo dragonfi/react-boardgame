@@ -1,5 +1,5 @@
-import {BoardGameRules, BoardState, PieceState} from '../BoardGame/BoardGame'
-import {Position, rankRange, fileRange} from '../BoardGameUtils/Position'
+import {BoardGameRules, BoardState} from '../BoardGame/BoardGame'
+import {Position} from '../BoardGameUtils/Position'
 import {ObjectMap} from '../Utils/ObjectMap';
 
 import React from 'react'
@@ -10,14 +10,6 @@ const NOCOLOR = "";
 
 import './Go.css';
 import stoneSvg from './stone.svg';
-
-function opposingColor(color: string): string {
-  switch (color) {
-    case WHITE: return BLACK;
-    case BLACK: return WHITE;
-    default: return NOCOLOR;
-  }
-}
 
 function squareColor(board: BoardState, square: string): string {
   const piece = board.pieces[square];
@@ -40,7 +32,7 @@ class StoneRules {
     return this._stonesFromSameGroup(board, square);
   }
 
-  static movePiece(board: GoBoardState, square: string, newSquare: string): GoBoardState {
+  static movePiece(board: GoBoardState, _square: string, newSquare: string): GoBoardState {
     let pieces = {...board.pieces};
     const color = board.pieces[newSquare].color;
     let prisoners = {...board.prisoners};
