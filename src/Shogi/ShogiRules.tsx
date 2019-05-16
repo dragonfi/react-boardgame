@@ -102,7 +102,30 @@ class EnumeratedMovePieceRules extends PieceRules {
 }
 
 class RangingPieceRules extends PieceRules {
+  static directions: Array<Array<number>> = [[0, 0]];
+  static validMoves(board: ShogiBoardState, square: string): Array<string> {
+    const piece = board.pieces[square];
 
+    const validMoves = [];
+    const _directions = piece.color === BLACK ? this.directions : this._flipDirections();
+    for (const [dFile, dRank] of _directions) {
+      for(let i = 1; i < 9; i++) {
+        const newSquare = new Position(square).offsetFile(dFile*i).offsetRank(dRank*i).toString();
+        if (hasFriendlyPiece(board, newSquare, piece.color)) {
+          break;
+        }
+        validMoves.push(newSquare);
+        if (hasOpposingPiece(board, newSquare, piece.color)) {
+          break;
+        }
+      }
+    }
+    return validMoves;
+  }
+
+  static _flipDirections(): Array<Array<number>> {
+    return this.directions.map((pair) => [pair[0], pair[1] * -1]);
+  }
 }
 
 class KingRules extends EnumeratedMovePieceRules {
@@ -130,16 +153,19 @@ class PawnRules extends EnumeratedMovePieceRules {
   static moves = [[0, 1]];
 }
 
-class LanceRules extends PieceRules {
+class LanceRules extends RangingPieceRules {
   static figure = "香";
+  static directions = [[0, 1]];
 }
 
-class BishopRules extends PieceRules {
+class BishopRules extends RangingPieceRules {
   static figure = "角";
+  static directions = [[-1, 1], [1, 1], [-1, -1], [1, -1]];
 }
 
-class RookRules extends PieceRules {
+class RookRules extends RangingPieceRules {
   static figure = "飛";
+  static directions = [[0, 1], [1, 0], [-1, 0], [0, -1]];
 }
 
 class DragonRules extends PieceRules {
