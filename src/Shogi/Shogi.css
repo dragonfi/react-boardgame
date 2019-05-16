@@ -39,4 +39,9 @@
   width: 3rem;
   text-align: center;
   line-height: 3.75rem;
+  color: black;
+}
+
+.react-boardgame__board--shogi .react-boardgame__piece--color-white {
+  transform: rotate(180deg);
 }
