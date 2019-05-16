@@ -121,6 +121,9 @@ class SilverRules extends PieceRules {
 
 class KnightRules extends PieceRules {
   static figure = "桂";
+class PawnRules extends EnumeratedMovePieceRules {
+  static figure = "歩";
+  static moves = [[0, 1]];
 }
 
 class LanceRules extends PieceRules {
@@ -133,10 +136,6 @@ class BishopRules extends PieceRules {
 
 class RookRules extends PieceRules {
   static figure = "飛";
-}
-
-class PawnRules extends PieceRules {
-  static figure = "歩";
 }
 
 class DragonRules extends PieceRules {
