@@ -1,0 +1,11 @@
+Optional TODO:
+- Side pane as feature of boardgame
+- Undo
+- Turn order
+- Use Position instead of string
+- Shogi: mandatory promotions
+- Chess: Check
+- Chess: Full castling condition check
+- Chess: Checkmate
+- Checkers: multi-jump moves as single moves
+- Checkers: Only allow best moves
