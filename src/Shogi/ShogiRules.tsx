@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {BoardGameRules, BoardState, PieceState} from '../BoardGame/BoardGame';
 import {Position} from '../BoardGameUtils/Position';
 import {ObjectMap} from '../Utils/ObjectMap';
@@ -296,6 +298,37 @@ function initialBoardState(): ShogiBoardState {
   }
 }
 
+import {Piece} from '../BoardGame/Piece';
+
+class HandIndicator extends React.Component<{title: string, pieces: Array<PieceState>}> {
+  render() {
+    return (<div>
+      <h4>{this.props.title}</h4>
+      <div>
+        {this._renderPieces(this.props.pieces)}
+      </div>
+    </div>);
+  }
+  _renderPieces(pieces: Array<PieceState>) {
+    return pieces.map((piece) => this._renderPiece(piece));
+  }
+  _renderPiece(piece: PieceState) {
+    const figure = rules.pieces[piece.pieceType].figure;
+    return <Piece figure={figure} color={piece.color} />
+  }
+}
+
+class HandIndicators extends React.Component<{board: ShogiBoardState}> {
+  render() {
+    return (
+      <div className="react-boardgame__hand-indicator--shogi">
+        <HandIndicator title="Hand of White:" pieces={this.props.board.hand[WHITE]}/>
+        <HandIndicator title="Hand of Black:" pieces={this.props.board.hand[BLACK]}/>
+      </div>
+    )
+  }
+}
+
 const rules: BoardGameRules<ShogiBoardState> = {
   board: {ranks: 9, files: 9, style: 'shogi'},
   pieces: {
@@ -316,6 +349,6 @@ const rules: BoardGameRules<ShogiBoardState> = {
   },
   initialBoardState: initialBoardState,
   selectors: [PiecePromotionSelector],
-  sideIndicators: [],
+  sideIndicators: [HandIndicators],
   emptySquareMove: (board: ShogiBoardState, _: string) => board,
 }

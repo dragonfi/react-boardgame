@@ -35,6 +35,7 @@
   border-bottom: 1px solid black;
 }
 
+.react-boardgame__hand-indicator--shogi .react-boardgame__piece,
 .react-boardgame__board--shogi .react-boardgame__piece {
   background-image: url('./pieceOutline.svg');
   background-size: 100% 100%;
@@ -46,6 +47,19 @@
   color: black;
 }
 
+.react-boardgame__hand-indicator--shogi .react-boardgame__piece--color-white,
 .react-boardgame__board--shogi .react-boardgame__piece--color-white {
   transform: rotate(180deg);
+}
+
+
+.react-boardgame__hand-indicator--shogi, .react-boardgame__board--shogi {
+  background-color: #dd6666;
+  margin: 1rem;
+  padding: 1rem;
+  float: left;
+}
+
+.react-boardgame__hand-indicator--shogi .react-boardgame__piece {
+  display: inline-block;
 }
