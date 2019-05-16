@@ -1,4 +1,8 @@
-Optional TODO:
+TODO:
+- Shogi: more intuitive drops
+- Shogi: when removing piece move unpromoted version to hand
+
+Optional:
 - Side pane as feature of boardgame
 - Undo
 - Turn order
