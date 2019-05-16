@@ -358,6 +358,7 @@ class HandIndicators extends React.Component<{board: ShogiBoardState}> {
   render() {
     return (
       <div className="react-boardgame__hand-indicator--shogi">
+        <p>Active side: <Piece figure=" " color={this.props.board.activeSide} /></p>
         <HandIndicator title="Hand of White:" pieces={this.props.board.hand[WHITE]}/>
         <HandIndicator title="Hand of Black:" pieces={this.props.board.hand[BLACK]}/>
       </div>
