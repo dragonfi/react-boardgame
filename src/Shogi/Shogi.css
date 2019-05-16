@@ -19,6 +19,10 @@
   background-color: #dd6666;
 }
 
+.react-boardgame__board--shogi td:hover {
+  background-color: #666666;
+}
+
 .react-boardgame__board--shogi .react-boardgame__square:last-child {
   border-right: 1px solid black;
 }
