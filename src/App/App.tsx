@@ -12,7 +12,7 @@ class App extends Component {
     return (
       <div className="App react-boardgame__main-container">
         <div className="react-boardgame__inline-container">
-          <ErrorBoundary errorMessage="An error occured, we misplayed the chess board. Care to play a different game?">
+          <ErrorBoundary errorMessage="An error occured, we misplayed the go board. Care to play a different game?">
             <BoardGame rules={goRules} />
           </ErrorBoundary>
         </div>
