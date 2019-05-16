@@ -55,18 +55,17 @@ const TOKIN = "と";
 
 interface ShogiBoardState extends BoardState {
   hand: ObjectMap<Array<PieceState>>;
+  promotablePiece: string | null;
 }
 
 class PieceRules {
   static figure = " ";
-
-  static validMoves(board: ShogiBoardState, square: string): Array<string> {
-    return [];
-  }
+  static promotedVersion: string | null = null;
 
   static movePiece(board: ShogiBoardState, square: string, newSquare: string): ShogiBoardState {
     let pieces = {...board.pieces};
     let hand = {...board.hand};
+    let promotablePiece = null;
     const piece = board.pieces[square];
 
     const removedPiece = board.pieces[newSquare];
@@ -77,7 +76,15 @@ class PieceRules {
     delete pieces[square];
     pieces[newSquare] = piece;
 
-    return {...board, pieces: pieces, hand: hand};
+    if (this.promotedVersion && this._inPromotionZone(newSquare, piece.color)) {
+      promotablePiece = newSquare;
+    }
+
+    return {...board, pieces: pieces, hand: hand, promotablePiece: promotablePiece};
+  }
+  static _inPromotionZone(square: string, color: string): boolean {
+    const _square = new Position(square);
+    return color === BLACK ? _square.rank > 6 : _square.rank < 4;
   }
 }
 
@@ -141,31 +148,37 @@ class GoldRules extends EnumeratedMovePieceRules {
 class SilverRules extends EnumeratedMovePieceRules {
   static figure = "銀";
   static moves = [[1, 1], [0, 1], [-1, 1], [1, -1], [-1, -1]];
+  static promotedVersion = PROMOTED_SILVER;
 }
 
 class KnightRules extends EnumeratedMovePieceRules {
   static figure = "桂";
   static moves = [[1, 2], [-1, 2]];
+  static promotedVersion = PROMOTED_KNIGHT;
 }
 
 class PawnRules extends EnumeratedMovePieceRules {
   static figure = "歩";
   static moves = [[0, 1]];
+  static promotedVersion = TOKIN;
 }
 
 class LanceRules extends RangingPieceRules {
   static figure = "香";
   static directions = [[0, 1]];
+  static promotedVersion = PROMOTED_LANCE;
 }
 
 class BishopRules extends RangingPieceRules {
   static figure = "角";
   static directions = [[-1, 1], [1, 1], [-1, -1], [1, -1]];
+  static promotedVersion = HORSE;
 }
 
 class RookRules extends RangingPieceRules {
   static figure = "飛";
   static directions = [[0, 1], [1, 0], [-1, 0], [0, -1]];
+  static promotedVersion = DRAGON;
 }
 
 class HorseRules extends BishopRules {
@@ -198,6 +211,28 @@ class PromotedLanceRules extends GoldRules {
 
 class TokinRules extends GoldRules {
   static figure = "と"
+}
+
+class PiecePromotionSelector {
+  static condition(board: ShogiBoardState): boolean {
+    return !!board.promotablePiece;
+  }
+  static options(board: ShogiBoardState): Array<PieceState> {
+    if (!board.promotablePiece) {
+      return [];
+    }
+    const piece = board.pieces[board.promotablePiece];
+    const color = piece.color;
+    const pieceRules: any /* PieceRules */ = rules.pieces[piece.pieceType];
+    if (!pieceRules.promotedVersion) {
+      return [];
+    }
+    return [{pieceType: pieceRules.promotedVersion, color: color}];
+  }
+  static handleResult(board: ShogiBoardState, result: PieceState): ShogiBoardState {
+    const pieces = board.promotablePiece ? {...board.pieces, [board.promotablePiece]: result}: {...board.pieces};
+    return {...board, pieces: pieces, promotablePiece: null};
+  }
 }
 
 function initialBoardState(): ShogiBoardState {
@@ -254,7 +289,8 @@ function initialBoardState(): ShogiBoardState {
     hand: {
       [WHITE]: [],
       [BLACK]: [],
-    }
+    },
+    promotablePiece: null,
   }
 }
 
@@ -277,7 +313,7 @@ const rules: BoardGameRules<ShogiBoardState> = {
     [TOKIN]: TokinRules,
   },
   initialBoardState: initialBoardState,
-  selectors: [],
+  selectors: [PiecePromotionSelector],
   sideIndicators: [],
   emptySquareMove: (board: ShogiBoardState, _: string) => board,
 }
