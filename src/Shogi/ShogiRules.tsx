@@ -1,5 +1,7 @@
 import {BoardGameRules, BoardState} from '../BoardGame/BoardGame';
 
+import './Shogi.css';
+
 export {rules};
 
 //const WHITE = "react-boardgame__piece--color-white";

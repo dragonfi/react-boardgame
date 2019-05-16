@@ -1,0 +1,28 @@
+.react-boardgame__board--shogi {
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1rem;
+  padding: 1rem;
+  background-color: #dd6666;
+}
+
+.react-boardgame__board--shogi .react-boardgame__square {
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 0px;
+  border-bottom: 0px;
+  padding:0px;
+  margin:0px;
+  font-size: 4rem;
+  height: 3.75rem;
+  width: 3rem;
+  background-color: #dd6666;
+}
+
+.react-boardgame__board--shogi .react-boardgame__square:last-child {
+  border-right: 1px solid black;
+}
+
+.react-boardgame__board--shogi tr:last-child .react-boardgame__square {
+  border-bottom: 1px solid black;
+}
