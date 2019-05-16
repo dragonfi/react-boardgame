@@ -58,6 +58,7 @@ const TOKIN = "と";
 interface ShogiBoardState extends BoardState {
   hand: ObjectMap<Array<PieceState>>;
   promotablePiece: string | null;
+  squareSelectedForDrop: string | null;
 }
 
 class PieceRules {
@@ -68,6 +69,7 @@ class PieceRules {
     let pieces = {...board.pieces};
     let hand = {...board.hand};
     let promotablePiece = null;
+
     const piece = board.pieces[square];
 
     const removedPiece = board.pieces[newSquare];
@@ -82,7 +84,7 @@ class PieceRules {
       promotablePiece = newSquare;
     }
 
-    return {...board, pieces: pieces, hand: hand, promotablePiece: promotablePiece};
+    return {...board, pieces: pieces, hand: hand, promotablePiece: promotablePiece, activeSide: opposingColor(board.activeSide)};
   }
   static _inPromotionZone(square: string, color: string): boolean {
     const _square = new Position(square);
@@ -239,6 +241,39 @@ class PiecePromotionSelector {
   }
 }
 
+class DroppedPieceSelector {
+
+  static condition(board: ShogiBoardState): boolean {
+    return !!board.squareSelectedForDrop;
+  }
+
+  static options(board: ShogiBoardState): Array<PieceState> {
+    if (!board.squareSelectedForDrop) {
+      return [];
+    }
+
+    const color = board.activeSide;
+    const droppablePieces = board.hand[color];
+    return droppablePieces;
+  }
+
+  static handleResult(board: ShogiBoardState, result: PieceState): ShogiBoardState {
+    let droppablePieces = [...board.hand[result.color]];
+    let index = droppablePieces.findIndex((piece) => piece.color === result.color && piece.pieceType === result.pieceType);
+    if (index != -1) {
+      droppablePieces.splice(index, 1);
+    }
+
+    const pieces = board.squareSelectedForDrop ? {...board.pieces, [board.squareSelectedForDrop]: result}: {...board.pieces};
+    return {...board,
+      pieces: pieces,
+      hand: {...board.hand, [result.color]: droppablePieces},
+      activeSide: opposingColor(board.activeSide),
+      squareSelectedForDrop: null
+    };
+  }
+}
+
 function initialBoardState(): ShogiBoardState {
 
   return {
@@ -295,6 +330,7 @@ function initialBoardState(): ShogiBoardState {
       [BLACK]: [],
     },
     promotablePiece: null,
+    squareSelectedForDrop:  null,
   }
 }
 
@@ -329,6 +365,15 @@ class HandIndicators extends React.Component<{board: ShogiBoardState}> {
   }
 }
 
+function emptySquareMove(board: ShogiBoardState, square: string): ShogiBoardState {
+  const droppablePieces = board.hand[board.activeSide];
+  if (!droppablePieces) {
+    return board;
+  }
+
+  return {...board, squareSelectedForDrop: square};
+}
+
 const rules: BoardGameRules<ShogiBoardState> = {
   board: {ranks: 9, files: 9, style: 'shogi'},
   pieces: {
@@ -348,7 +393,7 @@ const rules: BoardGameRules<ShogiBoardState> = {
     [TOKIN]: TokinRules,
   },
   initialBoardState: initialBoardState,
-  selectors: [PiecePromotionSelector],
+  selectors: [PiecePromotionSelector, DroppedPieceSelector],
   sideIndicators: [HandIndicators],
-  emptySquareMove: (board: ShogiBoardState, _: string) => board,
+  emptySquareMove: emptySquareMove,
 }
