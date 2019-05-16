@@ -119,8 +119,11 @@ class SilverRules extends PieceRules {
   static figure = "銀";
 }
 
-class KnightRules extends PieceRules {
+class KnightRules extends EnumeratedMovePieceRules {
   static figure = "桂";
+  static moves = [[1, 2], [-1, 2]];
+}
+
 class PawnRules extends EnumeratedMovePieceRules {
   static figure = "歩";
   static moves = [[0, 1]];
