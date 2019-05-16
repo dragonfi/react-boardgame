@@ -115,8 +115,9 @@ class GoldRules extends EnumeratedMovePieceRules {
   static moves = [[1, 1], [0, 1], [-1, 1], [1, 0], [-1, 0], [0, -1]];
 }
 
-class SilverRules extends PieceRules {
+class SilverRules extends EnumeratedMovePieceRules {
   static figure = "銀";
+  static moves = [[1, 1], [0, 1], [-1, 1], [1, -1], [-1, -1]];
 }
 
 class KnightRules extends EnumeratedMovePieceRules {
