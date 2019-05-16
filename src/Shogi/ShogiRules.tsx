@@ -150,19 +150,19 @@ class HorseRules extends PieceRules {
   static figure = "馬";
 }
 
-class PromotedSilverRules extends PieceRules {
+class PromotedSilverRules extends GoldRules {
   static figure = "全";
 }
 
-class PromotedKnightRules extends PieceRules {
+class PromotedKnightRules extends GoldRules {
   static figure = "今";
 }
 
-class PromotedLanceRules extends PieceRules {
+class PromotedLanceRules extends GoldRules {
   static figure = "仝";
 }
 
-class TokinRules extends PieceRules {
+class TokinRules extends GoldRules {
   static figure = "と"
 }
 
