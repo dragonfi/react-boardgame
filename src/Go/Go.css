@@ -87,8 +87,7 @@ p {
 .react-boardgame__board--go .react-boardgame__piece img {
   width: 3rem;
   height: 3rem;
-  color: blac
-
+  color: black;
 }
 
 .react-boardgame__board--go .react-boardgame__piece--color-white img {
