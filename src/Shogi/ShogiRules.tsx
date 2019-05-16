@@ -76,7 +76,7 @@ class PieceRules {
     delete pieces[square];
     pieces[newSquare] = piece;
 
-    if (this.promotedVersion && this._inPromotionZone(newSquare, piece.color)) {
+    if (this.promotedVersion && (this._inPromotionZone(square, piece.color) || this._inPromotionZone(newSquare, piece.color))) {
       promotablePiece = newSquare;
     }
 
