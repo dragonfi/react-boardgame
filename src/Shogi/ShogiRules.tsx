@@ -81,13 +81,14 @@ class PieceRules {
   }
 }
 
-class KingRules extends PieceRules {
-  static figure = "王";
+class EnumeratedMovePieceRules extends PieceRules {
+  static moves: Array<Array<number>> = [[0, 0]];
   static validMoves(board: ShogiBoardState, square: string): Array<string> {
     const piece = board.pieces[square];
 
     const validMoves = [];
-    for (const [dFile, dRank] of [[1, 1], [0, 1], [-1, 1], [1, 0], [-1, 0], [1, -1], [0, -1], [-1, -1]]) {
+    const _moves = piece.color === BLACK ? this.moves : this._flipSingleMoves();
+    for (const [dFile, dRank] of _moves) {
       const newSquare = new Position(square).offsetFile(dFile).offsetRank(dRank).toString();
       if (!hasFriendlyPiece(board, newSquare, piece.color)) {
         validMoves.push(newSquare);
@@ -95,10 +96,23 @@ class KingRules extends PieceRules {
     }
     return validMoves;
   }
+  static _flipSingleMoves(): Array<Array<number>> {
+    return this.moves.map((pair) => [pair[0], pair[1] * -1]);
+  }
 }
 
-class GoldRules extends PieceRules {
+class RangingPieceRules extends PieceRules {
+
+}
+
+class KingRules extends EnumeratedMovePieceRules {
+  static figure = "王";
+  static moves = [[1, 1], [0, 1], [-1, 1], [1, 0], [-1, 0], [1, -1], [0, -1], [-1, -1]];
+}
+
+class GoldRules extends EnumeratedMovePieceRules {
   static figure = "金";
+  static moves = [[1, 1], [0, 1], [-1, 1], [1, 0], [-1, 0], [0, -1]];
 }
 
 class SilverRules extends PieceRules {
