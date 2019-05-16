@@ -172,17 +172,18 @@ class LanceRules extends RangingPieceRules {
 class BishopRules extends RangingPieceRules {
   static figure = "角";
   static directions = [[-1, 1], [1, 1], [-1, -1], [1, -1]];
-  static promotedVersion = HORSE;
+  static promotedVersion: string | null = HORSE;
 }
 
 class RookRules extends RangingPieceRules {
   static figure = "飛";
   static directions = [[0, 1], [1, 0], [-1, 0], [0, -1]];
-  static promotedVersion = DRAGON;
+  static promotedVersion: string | null = DRAGON;
 }
 
 class HorseRules extends BishopRules {
   static figure = "馬";
+  static promotedVersion = null;
   static enumeratedMoves = EnumeratedMovePieceRules.validMoves.bind(KingRules);
   static validMoves(board: ShogiBoardState, square: string): Array<string> {
     return super.validMoves(board, square).concat(this.enumeratedMoves(board, square));
@@ -191,6 +192,7 @@ class HorseRules extends BishopRules {
 
 class DragonRules extends RookRules {
   static figure = "竜";
+  static promotedVersion = null;
   static enumeratedMoves = EnumeratedMovePieceRules.validMoves.bind(KingRules);
   static validMoves(board: ShogiBoardState, square: string): Array<string> {
     return super.validMoves(board, square).concat(this.enumeratedMoves(board, square));
