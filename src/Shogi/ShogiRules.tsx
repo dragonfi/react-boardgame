@@ -168,12 +168,20 @@ class RookRules extends RangingPieceRules {
   static directions = [[0, 1], [1, 0], [-1, 0], [0, -1]];
 }
 
-class DragonRules extends PieceRules {
-  static figure = "竜";
+class HorseRules extends BishopRules {
+  static figure = "馬";
+  static enumeratedMoves = EnumeratedMovePieceRules.validMoves.bind(KingRules);
+  static validMoves(board: ShogiBoardState, square: string): Array<string> {
+    return super.validMoves(board, square).concat(this.enumeratedMoves(board, square));
+  }
 }
 
-class HorseRules extends PieceRules {
-  static figure = "馬";
+class DragonRules extends RookRules {
+  static figure = "竜";
+  static enumeratedMoves = EnumeratedMovePieceRules.validMoves.bind(KingRules);
+  static validMoves(board: ShogiBoardState, square: string): Array<string> {
+    return super.validMoves(board, square).concat(this.enumeratedMoves(board, square));
+  }
 }
 
 class PromotedSilverRules extends GoldRules {
