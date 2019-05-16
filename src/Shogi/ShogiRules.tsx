@@ -1,4 +1,6 @@
-import {BoardGameRules, BoardState, PieceRules} from '../BoardGame/BoardGame';
+import {BoardGameRules, BoardState, PieceState} from '../BoardGame/BoardGame';
+import {Position} from '../BoardGameUtils/Position';
+import {ObjectMap} from '../Utils/ObjectMap';
 
 import './Shogi.css';
 
@@ -6,7 +8,33 @@ export {rules};
 
 const WHITE = "react-boardgame__piece--color-white";
 const BLACK = "react-boardgame__piece--color-black";
-//const NOCOLOR = "react-boardgame__piece--color-nocolor";
+const NOCOLOR = "react-boardgame__piece--color-nocolor";
+
+function opposingColor(color: string): string {
+  switch (color) {
+    case WHITE: return BLACK;
+    case BLACK: return WHITE;
+    default: return NOCOLOR;
+  }
+}
+
+function squareColor(board: BoardState, square: string): string {
+  const piece = board.pieces[square];
+  return piece ? piece.color : NOCOLOR;
+}
+
+function hasOpposingPiece(board: BoardState, square: string, color: string): boolean {
+  return squareColor(board, square) === opposingColor(color);
+}
+
+function hasFriendlyPiece(board: BoardState, square: string, color: string): boolean {
+  return squareColor(board, square) === color;
+}
+
+function isEmptySquare(board: BoardState, square: string): boolean {
+  return squareColor(board, square) === NOCOLOR;
+}
+
 
 const KING = "王";
 const GOLD = "金";
@@ -26,68 +54,98 @@ const TOKIN = "と";
 
 
 interface ShogiBoardState extends BoardState {
-
+  hand: ObjectMap<Array<PieceState>>;
 }
 
-class KingRules {
-  static figure = "王";
-  static validMoves(_board: ShogiBoardState, _square: string): Array<string> {
+class PieceRules {
+  static figure = " ";
+
+  static validMoves(board: ShogiBoardState, square: string): Array<string> {
     return [];
   }
-  static movePiece(board: ShogiBoardState, _square: string, _newSquare: string): ShogiBoardState {
-    return board;
+
+  static movePiece(board: ShogiBoardState, square: string, newSquare: string): ShogiBoardState {
+    let pieces = {...board.pieces};
+    let hand = {...board.hand};
+    const piece = board.pieces[square];
+
+    const removedPiece = board.pieces[newSquare];
+    if (removedPiece) {
+      hand[piece.color].push({pieceType: removedPiece.pieceType, color: piece.color});
+    }
+
+    delete pieces[square];
+    pieces[newSquare] = piece;
+
+    return {...board, pieces: pieces, hand: hand};
   }
 }
 
-class GoldRules extends KingRules {
+class KingRules extends PieceRules {
+  static figure = "王";
+  static validMoves(board: ShogiBoardState, square: string): Array<string> {
+    const piece = board.pieces[square];
+
+    const validMoves = [];
+    for (const [dFile, dRank] of [[1, 1], [0, 1], [-1, 1], [1, 0], [-1, 0], [1, -1], [0, -1], [-1, -1]]) {
+      const newSquare = new Position(square).offsetFile(dFile).offsetRank(dRank).toString();
+      if (!hasFriendlyPiece(board, newSquare, piece.color)) {
+        validMoves.push(newSquare);
+      }
+    }
+    return validMoves;
+  }
+}
+
+class GoldRules extends PieceRules {
   static figure = "金";
 }
 
-class SilverRules extends KingRules {
+class SilverRules extends PieceRules {
   static figure = "銀";
 }
 
-class KnightRules extends KingRules {
+class KnightRules extends PieceRules {
   static figure = "桂";
 }
 
-class LanceRules extends KingRules {
+class LanceRules extends PieceRules {
   static figure = "香";
 }
 
-class BishopRules extends KingRules {
+class BishopRules extends PieceRules {
   static figure = "角";
 }
 
-class RookRules extends KingRules {
+class RookRules extends PieceRules {
   static figure = "飛";
 }
 
-class PawnRules extends KingRules {
+class PawnRules extends PieceRules {
   static figure = "歩";
 }
 
-class DragonRules extends KingRules {
+class DragonRules extends PieceRules {
   static figure = "竜";
 }
 
-class HorseRules extends KingRules {
+class HorseRules extends PieceRules {
   static figure = "馬";
 }
 
-class PromotedSilverRules extends KingRules {
+class PromotedSilverRules extends PieceRules {
   static figure = "全";
 }
 
-class PromotedKnightRules extends KingRules {
+class PromotedKnightRules extends PieceRules {
   static figure = "今";
 }
 
-class PromotedLanceRules extends KingRules {
+class PromotedLanceRules extends PieceRules {
   static figure = "仝";
 }
 
-class TokinRules extends KingRules {
+class TokinRules extends PieceRules {
   static figure = "と"
 }
 
@@ -142,6 +200,10 @@ function initialBoardState(): ShogiBoardState {
       "i9": {pieceType: LANCE, color: WHITE},
     },
     activeSide: BLACK,
+    hand: {
+      [WHITE]: [],
+      [BLACK]: [],
+    }
   }
 }
 
