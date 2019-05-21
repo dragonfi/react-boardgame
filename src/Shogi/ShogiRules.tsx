@@ -33,10 +33,6 @@ function hasFriendlyPiece(board: BoardState, square: string, color: string): boo
   return squareColor(board, square) === color;
 }
 
-function isEmptySquare(board: BoardState, square: string): boolean {
-  return squareColor(board, square) === NOCOLOR;
-}
-
 
 const KING = "王";
 const GOLD = "金";
@@ -369,18 +365,10 @@ interface Callable1<A, R> {
   (a: A): R;
 }
 
-interface Callable2<A, B, R> {
-  (a: A, b: B): R;
-}
-
 function removeOne<T>(ts: Array<T>, predicate: Callable1<T, boolean>): Array<T> {
   const matching = ts.filter(predicate);
   const rest = ts.filter((item) => !predicate(item));
   return rest.concat(matching.slice(0, matching.length -1));
-}
-
-function sameItems<T>(ts1: Array<T>, ts2: Array<T>, cmp: Callable2<T, T, boolean>): boolean {
-  return ts1.length === ts2.length && ts1.every((value: T, index: number) => value === ts2[index]);
 }
 
 function emptySquareMove(board: ShogiBoardState, square: string): ShogiBoardState {
