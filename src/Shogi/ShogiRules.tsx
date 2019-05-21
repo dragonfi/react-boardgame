@@ -58,7 +58,6 @@ const TOKIN = "と";
 interface ShogiBoardState extends BoardState {
   hand: ObjectMap<Array<PieceState>>;
   promotablePiece: string | null;
-  squareSelectedForDrop: string | null;
   pieceToDrop: PieceState | null;
 }
 
@@ -242,39 +241,6 @@ class PiecePromotionSelector {
   }
 }
 
-class DroppedPieceSelector {
-
-  static condition(board: ShogiBoardState): boolean {
-    return !!board.squareSelectedForDrop;
-  }
-
-  static options(board: ShogiBoardState): Array<PieceState> {
-    if (!board.squareSelectedForDrop) {
-      return [];
-    }
-
-    const color = board.activeSide;
-    const droppablePieces = board.hand[color];
-    return droppablePieces;
-  }
-
-  static handleResult(board: ShogiBoardState, result: PieceState): ShogiBoardState {
-    let droppablePieces = [...board.hand[result.color]];
-    let index = droppablePieces.findIndex((piece) => piece.color === result.color && piece.pieceType === result.pieceType);
-    if (index != -1) {
-      droppablePieces.splice(index, 1);
-    }
-
-    const pieces = board.squareSelectedForDrop ? {...board.pieces, [board.squareSelectedForDrop]: result}: {...board.pieces};
-    return {...board,
-      pieces: pieces,
-      hand: {...board.hand, [result.color]: droppablePieces},
-      activeSide: opposingColor(board.activeSide),
-      squareSelectedForDrop: null
-    };
-  }
-}
-
 function initialBoardState(): ShogiBoardState {
 
   return {
@@ -331,7 +297,6 @@ function initialBoardState(): ShogiBoardState {
       [BLACK]: [],
     },
     promotablePiece: null,
-    squareSelectedForDrop:  null,
     pieceToDrop: null,
   }
 }
@@ -419,25 +384,21 @@ function sameItems<T>(ts1: Array<T>, ts2: Array<T>, cmp: Callable2<T, T, boolean
 }
 
 function emptySquareMove(board: ShogiBoardState, square: string): ShogiBoardState {
-  if (board.pieceToDrop) {
-    const piece: PieceState = board.pieceToDrop;
-    const color = board.pieceToDrop.color;
-    const activeHand = removeOne<PieceState>(board.hand[color], samePiece.bind(null, piece));
-    return {
-      ...board,
-      pieces: {...board.pieces, [square]: board.pieceToDrop},
-      hand: {
-        ...board.hand,
-        [board.pieceToDrop.color]: activeHand,
-      },
-      pieceToDrop: null};
+  if (!board.pieceToDrop) {
+    return {...board};
   }
-  const droppablePieces = board.hand[board.activeSide];
-  if (!droppablePieces) {
-    return board;
-  }
-
-  return {...board, squareSelectedForDrop: square};
+  const piece: PieceState = board.pieceToDrop;
+  const color = board.pieceToDrop.color;
+  const activeHand = removeOne<PieceState>(board.hand[color], samePiece.bind(null, piece));
+  return {
+    ...board,
+    pieces: {...board.pieces, [square]: board.pieceToDrop},
+    hand: {
+      ...board.hand,
+      [board.pieceToDrop.color]: activeHand,
+    },
+    pieceToDrop: null
+  };
 }
 
 const rules: BoardGameRules<ShogiBoardState> = {
@@ -459,7 +420,7 @@ const rules: BoardGameRules<ShogiBoardState> = {
     [TOKIN]: TokinRules,
   },
   initialBoardState: initialBoardState,
-  selectors: [PiecePromotionSelector, DroppedPieceSelector],
+  selectors: [PiecePromotionSelector],
   sideIndicators: [HandIndicators],
   emptySquareMove: emptySquareMove,
 }
