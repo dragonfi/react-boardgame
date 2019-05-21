@@ -75,7 +75,7 @@ class PieceRules {
 
     const removedPiece = board.pieces[newSquare];
     if (removedPiece) {
-      hand[piece.color].push({pieceType: removedPiece.pieceType, color: piece.color});
+      hand[piece.color] = [...hand[piece.color], {pieceType: removedPiece.pieceType, color: piece.color}];
     }
 
     delete pieces[square];
@@ -338,7 +338,17 @@ function initialBoardState(): ShogiBoardState {
 
 import {Piece} from '../BoardGame/Piece';
 
-class HandIndicator extends React.Component<{title: string, pieces: Array<PieceState>, onPieceClick: (piece: PieceState) => void}> {
+interface HandIndicatorProps {
+  title: string;
+  pieces: Array<PieceState>;
+  onPieceClick: (piece: PieceState) => void;
+}
+
+class HandIndicator extends React.Component<HandIndicatorProps, {highlighted: number | null}> {
+  constructor(props: HandIndicatorProps) {
+    super(props);
+    this.state = {highlighted: null};
+  }
   render() {
     return (<div>
       <h4>{this.props.title}</h4>
@@ -347,12 +357,21 @@ class HandIndicator extends React.Component<{title: string, pieces: Array<PieceS
       </div>
     </div>);
   }
-  _renderPieces(pieces: Array<PieceState>) {
-    return pieces.map((piece) => this._renderPiece(piece));
+  componentDidUpdate(prevProps: HandIndicatorProps): void {
+    console.log("update", prevProps.pieces, this.props.pieces, sameItems(prevProps.pieces, this.props.pieces, samePiece));
+    if (!sameItems(prevProps.pieces, this.props.pieces, samePiece)) {
+      console.log("set highlighted to null");
+      this.setState({highlighted: null});
+    }
   }
-  _renderPiece(piece: PieceState) {
+  _renderPieces(pieces: Array<PieceState>) {
+    return pieces.map((piece, index) => this._renderPiece(piece, index));
+  }
+  _renderPiece(piece: PieceState, key: number) {
     const figure = rules.pieces[piece.pieceType].figure;
-    return (<div onClick={() => this.props.onPieceClick(piece)}>
+    const className = "react-boardgame__hand-indicator__piece--shogi" + (key === this.state.highlighted ? "--highlighted": "");
+    console.log(key, this.state.highlighted, className);
+    return (<div className={className} key={key} onClick={() => {this.props.onPieceClick(piece); this.setState({highlighted: key})}}>
       <Piece figure={figure} color={piece.color} />
     </div>)
   }
@@ -377,14 +396,22 @@ function samePiece(first: PieceState, other: PieceState) {
   return first.color === other.color && first.pieceType === other.pieceType;
 }
 
-interface Callable<A, R> {
+interface Callable1<A, R> {
   (a: A): R;
 }
 
-function removeOne<T>(ts: Array<T>, predicate: Callable<T, boolean>): Array<T> {
+interface Callable2<A, B, R> {
+  (a: A, b: B): R;
+}
+
+function removeOne<T>(ts: Array<T>, predicate: Callable1<T, boolean>): Array<T> {
   const matching = ts.filter(predicate);
   const rest = ts.filter((item) => !predicate(item));
   return rest.concat(matching.slice(0, matching.length -1));
+}
+
+function sameItems<T>(ts1: Array<T>, ts2: Array<T>, cmp: Callable2<T, T, boolean>): boolean {
+  return ts1.length === ts2.length && ts1.every((value: T, index: number) => value === ts2[index]);
 }
 
 function emptySquareMove(board: ShogiBoardState, square: string): ShogiBoardState {
