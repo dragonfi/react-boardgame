@@ -59,7 +59,11 @@ interface SideIndicatorProps<TBoardState extends BoardState> {
   onPieceClick: (piece: PieceState) => void;
 }
 
-class SideIndicator<TBoardState extends BoardState> extends React.Component<SideIndicatorProps<TBoardState>> {};
+class SideIndicator<TBoardState extends BoardState> extends React.Component<SideIndicatorProps<TBoardState>> {
+  static handleOnClick(board: any, _: PieceState) {
+    return {...board};
+  }
+};
 
 class BoardGame<TRules extends BoardGameRules<TState>, TState extends BoardState>
   extends Component<BoardGameProps<TState, TRules>, BoardGameState<TState>> {
@@ -142,8 +146,10 @@ class BoardGame<TRules extends BoardGameRules<TState>, TState extends BoardState
     return <PieceSelector options={options} onOptionClick={this._onOptionClick.bind(this, selector)} />
   }
 
-  _onSideInicatorPieceClick(piece: PieceState): void {
-    console.log("clicked:", piece);
+  _onSideInicatorPieceClick(component: typeof SideIndicator, piece: PieceState): void {
+    this.setState({
+      board: component.handleOnClick(this.state.board, piece),
+    });
   }
 
   render() {
@@ -157,7 +163,7 @@ class BoardGame<TRules extends BoardGameRules<TState>, TState extends BoardState
         {this._renderActiveSelector()}
         {this.props.rules.sideIndicators.map((component: typeof SideIndicator, key: number) =>
           React.createElement(component,
-            {board: this.state.board, key: key, onPieceClick: this._onSideInicatorPieceClick.bind(this)}
+            {board: this.state.board, key: key, onPieceClick: this._onSideInicatorPieceClick.bind(this, component)}
           )
         )}
       </div>
