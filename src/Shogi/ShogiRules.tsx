@@ -60,6 +60,11 @@ interface ShogiBoardState extends BoardState {
 class PieceRules {
   static figure = " ";
   static promotedVersion: string | null = null;
+  static demotedVersion: string | null = null;
+
+  static validMoves(_: ShogiBoardState, __: string): Array<string> {
+    return [];
+  }
 
   static movePiece(board: ShogiBoardState, square: string, newSquare: string): ShogiBoardState {
     let pieces = {...board.pieces};
@@ -70,7 +75,9 @@ class PieceRules {
 
     const removedPiece = board.pieces[newSquare];
     if (removedPiece) {
-      hand[piece.color] = [...hand[piece.color], {pieceType: removedPiece.pieceType, color: piece.color}];
+      const _demotedVersion = pieceRules[removedPiece.pieceType].demotedVersion;
+      const demotedPieceType = _demotedVersion ? _demotedVersion : removedPiece.pieceType;
+      hand[piece.color] = [...hand[piece.color], {pieceType: demotedPieceType, color: piece.color}];
     }
 
     delete pieces[square];
@@ -191,6 +198,7 @@ class RookRules extends RangingPieceRules {
 class HorseRules extends BishopRules {
   static figure = "馬";
   static promotedVersion = null;
+  static demotedVersion = BISHOP;
   static enumeratedMoves = EnumeratedMovePieceRules.validMoves.bind(KingRules);
   static validMoves(board: ShogiBoardState, square: string): Array<string> {
     return super.validMoves(board, square).concat(this.enumeratedMoves(board, square));
@@ -200,6 +208,7 @@ class HorseRules extends BishopRules {
 class DragonRules extends RookRules {
   static figure = "竜";
   static promotedVersion = null;
+  static demotedVersion = ROOK;
   static enumeratedMoves = EnumeratedMovePieceRules.validMoves.bind(KingRules);
   static validMoves(board: ShogiBoardState, square: string): Array<string> {
     return super.validMoves(board, square).concat(this.enumeratedMoves(board, square));
@@ -208,18 +217,22 @@ class DragonRules extends RookRules {
 
 class PromotedSilverRules extends GoldRules {
   static figure = "全";
+  static demotedVersion = SILVER;
 }
 
 class PromotedKnightRules extends GoldRules {
   static figure = "今";
+  static demotedVersion = KNIGHT;
 }
 
 class PromotedLanceRules extends GoldRules {
   static figure = "仝";
+  static demotedVersion = LANCE;
 }
 
 class TokinRules extends GoldRules {
   static figure = "と"
+  static demotedVersion = PAWN;
 }
 
 class PiecePromotionSelector {
@@ -398,24 +411,26 @@ function emptySquareMove(board: ShogiBoardState, square: string): ShogiBoardStat
   };
 }
 
+const pieceRules: {[pieces: string]: typeof PieceRules} = {
+  [KING]: KingRules,
+  [GOLD]: GoldRules,
+  [SILVER]: SilverRules,
+  [KNIGHT]: KnightRules,
+  [LANCE]: LanceRules,
+  [BISHOP]: BishopRules,
+  [ROOK]: RookRules,
+  [PAWN]: PawnRules,
+  [DRAGON]: DragonRules,
+  [HORSE]: HorseRules,
+  [PROMOTED_SILVER]: PromotedSilverRules,
+  [PROMOTED_KNIGHT]: PromotedKnightRules,
+  [PROMOTED_LANCE]: PromotedLanceRules,
+  [TOKIN]: TokinRules,
+}
+
 const rules: BoardGameRules<ShogiBoardState> = {
   board: {ranks: 9, files: 9, style: 'shogi'},
-  pieces: {
-    [KING]: KingRules,
-    [GOLD]: GoldRules,
-    [SILVER]: SilverRules,
-    [KNIGHT]: KnightRules,
-    [LANCE]: LanceRules,
-    [BISHOP]: BishopRules,
-    [ROOK]: RookRules,
-    [PAWN]: PawnRules,
-    [DRAGON]: DragonRules,
-    [HORSE]: HorseRules,
-    [PROMOTED_SILVER]: PromotedSilverRules,
-    [PROMOTED_KNIGHT]: PromotedKnightRules,
-    [PROMOTED_LANCE]: PromotedLanceRules,
-    [TOKIN]: TokinRules,
-  },
+  pieces: pieceRules,
   initialBoardState: initialBoardState,
   selectors: [PiecePromotionSelector],
   sideIndicators: [HandIndicators],
