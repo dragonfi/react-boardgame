@@ -357,20 +357,24 @@ class HandIndicator extends React.Component<HandIndicatorProps, {highlighted: nu
       </div>
     </div>);
   }
-  componentDidUpdate(prevProps: HandIndicatorProps): void {
-    console.log("update", prevProps.pieces, this.props.pieces, sameItems(prevProps.pieces, this.props.pieces, samePiece));
-    if (!sameItems(prevProps.pieces, this.props.pieces, samePiece)) {
-      console.log("set highlighted to null");
-      this.setState({highlighted: null});
-    }
+  componentDidMount() {
+    document.addEventListener('mousedown', this._handleDocumentClick.bind(this));
   }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this._handleDocumentClick.bind(this));
+  }
+
+  _handleDocumentClick(_: MouseEvent) {
+    this.setState({highlighted: null});
+  }
+
   _renderPieces(pieces: Array<PieceState>) {
     return pieces.map((piece, index) => this._renderPiece(piece, index));
   }
   _renderPiece(piece: PieceState, key: number) {
     const figure = rules.pieces[piece.pieceType].figure;
     const className = "react-boardgame__hand-indicator__piece--shogi" + (key === this.state.highlighted ? "--highlighted": "");
-    console.log(key, this.state.highlighted, className);
     return (<div className={className} key={key} onClick={() => {this.props.onPieceClick(piece); this.setState({highlighted: key})}}>
       <Piece figure={figure} color={piece.color} />
     </div>)
