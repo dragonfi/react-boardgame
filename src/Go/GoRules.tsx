@@ -1,4 +1,4 @@
-import {BoardGameRules, BoardState} from '../BoardGame/BoardGame'
+import {BoardGameRules, BoardState, SideIndicator} from '../BoardGame/BoardGame'
 import {Position} from '../BoardGameUtils/Position'
 import {ObjectMap} from '../Utils/ObjectMap';
 
@@ -124,7 +124,7 @@ class PrisonerCounter extends React.Component<{title: string, prisonerCount: num
   }
 }
 
-class PrisonerCounters extends React.Component<{board: GoBoardState}> {
+class PrisonerCounters extends SideIndicator<GoBoardState> {
   render() {
     return (
       <div className="react-boardgame__prisoner-counter--go">

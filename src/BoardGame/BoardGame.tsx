@@ -6,7 +6,7 @@ import {PieceSelector, PieceSelectorOption} from "./PieceSelector";
 import {PieceProps} from "./Piece";
 import './BoardGame.css';
 
-export {BoardGame};
+export {BoardGame,  SideIndicator};
 
 export interface PieceState {
   pieceType: string;
@@ -34,7 +34,7 @@ export interface BoardGameRules<TBoardState extends BoardState> {
   };
   emptySquareMove(board: TBoardState, square: string): TBoardState;
   selectors: Array<PieceSelectorRules<TBoardState>>;
-  sideIndicators: Array<typeof Component>;
+  sideIndicators: Array<typeof SideIndicator>;
 }
 
 export interface PieceSelectorRules<TBoardState extends BoardState> {
@@ -52,6 +52,14 @@ interface BoardGameState<TBoardState extends BoardState> {
   highlightedPiece: string;
   highlightedMoves: Array<string>;
 }
+
+interface SideIndicatorProps<TBoardState extends BoardState> {
+  board: TBoardState;
+  key: number;
+  onPieceClick: (piece: PieceState) => void;
+}
+
+class SideIndicator<TBoardState extends BoardState> extends React.Component<SideIndicatorProps<TBoardState>> {};
 
 class BoardGame<TRules extends BoardGameRules<TState>, TState extends BoardState>
   extends Component<BoardGameProps<TState, TRules>, BoardGameState<TState>> {
@@ -134,6 +142,10 @@ class BoardGame<TRules extends BoardGameRules<TState>, TState extends BoardState
     return <PieceSelector options={options} onOptionClick={this._onOptionClick.bind(this, selector)} />
   }
 
+  _onSideInicatorPieceClick(piece: PieceState): void {
+    console.log("clicked:", piece);
+  }
+
   render() {
     const boardRules = this.props.rules.board;
     const pieces = this.state.board.pieces;
@@ -143,7 +155,11 @@ class BoardGame<TRules extends BoardGameRules<TState>, TState extends BoardState
       <div className="react-boardgame">
         <Board shape={boardRules} pieces={pieceReprs} highlightedSquares={highlightedSquares} onSquareClick={this._onSquareClick.bind(this)}/>
         {this._renderActiveSelector()}
-        {this.props.rules.sideIndicators.map((component: any, key: number) => React.createElement(component, {board: this.state.board, key: key}))}
+        {this.props.rules.sideIndicators.map((component: typeof SideIndicator, key: number) =>
+          React.createElement(component,
+            {board: this.state.board, key: key, onPieceClick: this._onSideInicatorPieceClick.bind(this)}
+          )
+        )}
       </div>
     )
   }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {BoardGameRules, BoardState, PieceState} from '../BoardGame/BoardGame';
+import {BoardGameRules, BoardState, PieceState, SideIndicator} from '../BoardGame/BoardGame';
 import {Position} from '../BoardGameUtils/Position';
 import {ObjectMap} from '../Utils/ObjectMap';
 
@@ -336,7 +336,7 @@ function initialBoardState(): ShogiBoardState {
 
 import {Piece} from '../BoardGame/Piece';
 
-class HandIndicator extends React.Component<{title: string, pieces: Array<PieceState>}> {
+class HandIndicator extends React.Component<{title: string, pieces: Array<PieceState>, onPieceClick: (piece: PieceState) => void}> {
   render() {
     return (<div>
       <h4>{this.props.title}</h4>
@@ -350,17 +350,19 @@ class HandIndicator extends React.Component<{title: string, pieces: Array<PieceS
   }
   _renderPiece(piece: PieceState) {
     const figure = rules.pieces[piece.pieceType].figure;
-    return <Piece figure={figure} color={piece.color} />
+    return (<div onClick={() => this.props.onPieceClick(piece)}>
+      <Piece figure={figure} color={piece.color} />
+    </div>)
   }
 }
 
-class HandIndicators extends React.Component<{board: ShogiBoardState}> {
+class HandIndicators extends SideIndicator<ShogiBoardState> {
   render() {
     return (
       <div className="react-boardgame__hand-indicator--shogi">
         <p>Active side: <Piece figure=" " color={this.props.board.activeSide} /></p>
-        <HandIndicator title="Hand of White:" pieces={this.props.board.hand[WHITE]}/>
-        <HandIndicator title="Hand of Black:" pieces={this.props.board.hand[BLACK]}/>
+        <HandIndicator title="Hand of White:" pieces={this.props.board.hand[WHITE]} onPieceClick={this.props.onPieceClick}/>
+        <HandIndicator title="Hand of Black:" pieces={this.props.board.hand[BLACK]} onPieceClick={this.props.onPieceClick}/>
       </div>
     )
   }
