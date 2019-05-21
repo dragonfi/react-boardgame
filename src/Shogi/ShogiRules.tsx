@@ -302,6 +302,7 @@ import {Piece} from '../BoardGame/Piece';
 interface HandIndicatorProps {
   title: string;
   pieces: Array<PieceState>;
+  pieceToDrop: PieceState | null;
   onPieceClick: (piece: PieceState) => void;
 }
 
@@ -318,16 +319,17 @@ class HandIndicator extends React.Component<HandIndicatorProps, {highlighted: nu
       </div>
     </div>);
   }
-  componentDidMount() {
-    document.addEventListener('mousedown', this._handleDocumentClick.bind(this));
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('mousedown', this._handleDocumentClick.bind(this));
-  }
-
-  _handleDocumentClick(_: MouseEvent) {
-    this.setState({highlighted: null});
+  componentDidUpdate(oldProps: HandIndicatorProps) {
+    if (oldProps.pieceToDrop === this.props.pieceToDrop) {
+      return;
+    }
+    if (this.props.pieceToDrop === null) {
+      this.setState({highlighted: null});
+      return;
+    }
+    if (this.state.highlighted !== null && !samePiece(this.props.pieceToDrop, this.props.pieces[this.state.highlighted])) {
+      this.setState({highlighted: null});
+    }
   }
 
   _renderPieces(pieces: Array<PieceState>) {
@@ -347,8 +349,8 @@ class HandIndicators extends SideIndicator<ShogiBoardState> {
     return (
       <div className="react-boardgame__hand-indicator--shogi">
         <p>Active side: <Piece figure=" " color={this.props.board.activeSide} /></p>
-        <HandIndicator title="Hand of White:" pieces={this.props.board.hand[WHITE]} onPieceClick={this.props.onPieceClick}/>
-        <HandIndicator title="Hand of Black:" pieces={this.props.board.hand[BLACK]} onPieceClick={this.props.onPieceClick}/>
+        <HandIndicator title="Hand of White:" pieceToDrop={this.props.board.pieceToDrop} pieces={this.props.board.hand[WHITE]} onPieceClick={this.props.onPieceClick}/>
+        <HandIndicator title="Hand of Black:" pieceToDrop={this.props.board.pieceToDrop} pieces={this.props.board.hand[BLACK]} onPieceClick={this.props.onPieceClick}/>
       </div>
     )
   }
