@@ -80,7 +80,14 @@ class PieceRules {
       promotablePiece = newSquare;
     }
 
-    return {...board, pieces: pieces, hand: hand, promotablePiece: promotablePiece, activeSide: opposingColor(board.activeSide)};
+    return {
+      ...board,
+      pieces: pieces,
+      hand: hand,
+      promotablePiece: promotablePiece,
+      activeSide: opposingColor(board.activeSide),
+      pieceToDrop: null,
+    };
   }
   static _inPromotionZone(square: string, color: string): boolean {
     const _square = new Position(square);
@@ -233,7 +240,7 @@ class PiecePromotionSelector {
   }
   static handleResult(board: ShogiBoardState, result: PieceState): ShogiBoardState {
     const pieces = board.promotablePiece ? {...board.pieces, [board.promotablePiece]: result}: {...board.pieces};
-    return {...board, pieces: pieces, promotablePiece: null};
+    return {...board, pieces: pieces, promotablePiece: null, pieceToDrop: null};
   }
 }
 
