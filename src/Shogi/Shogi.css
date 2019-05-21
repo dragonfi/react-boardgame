@@ -23,6 +23,10 @@
   background-color: #666666;
 }
 
+.react-boardgame__hand-indicator__piece--shogi {
+  display: inline-block;
+}
+
 .react-boardgame__hand-indicator__piece--shogi--highlighted,
 .react-boardgame__board--shogi td.react-boardgame__square--highlighted {
   background-color: #999999;
@@ -34,6 +38,10 @@
 
 .react-boardgame__board--shogi tr:last-child .react-boardgame__square {
   border-bottom: 1px solid black;
+}
+
+.react-boardgame__hand-indicator--shogi {
+  width: 16rem;
 }
 
 .react-boardgame__hand-indicator--shogi .react-boardgame__piece,

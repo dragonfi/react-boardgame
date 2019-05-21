@@ -357,7 +357,9 @@ class HandIndicator extends React.Component<HandIndicatorProps, {highlighted: nu
   }
   _renderPiece(piece: PieceState, key: number) {
     const figure = rules.pieces[piece.pieceType].figure;
-    const className = "react-boardgame__hand-indicator__piece--shogi" + (key === this.state.highlighted ? "--highlighted": "");
+    const normalClassName = "react-boardgame__hand-indicator__piece--shogi";
+    const highlightedClassName = "react-boardgame__hand-indicator__piece--shogi--highlighted";
+    const className = key === this.state.highlighted ? normalClassName + " " + highlightedClassName : normalClassName;
     return (<div className={className} key={key} onClick={() => {this.props.onPieceClick(piece); this.setState({highlighted: key})}}>
       <Piece figure={figure} color={piece.color} />
     </div>)
